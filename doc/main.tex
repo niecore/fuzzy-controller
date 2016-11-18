@@ -1,0 +1,180 @@
+%http://www.daniel-brettschneider.de/allgemein/latex-vorlage-fur-hausarbeiten-oder-abschlussarbeiten
+\documentclass[12pt,a4paper,bibliography=totocnumbered,listof=totocnumbered]{scrartcl}
+\usepackage[ngerman]{babel}
+\usepackage[autostyle=true,german=quotes]{csquotes}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+\usepackage{geometry}
+\usepackage{setspace}
+\usepackage[right]{eurosym}
+\usepackage[printonlyused]{acronym}
+\usepackage{subfig}
+\usepackage{floatflt}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{colortbl}
+\usepackage{paralist}
+\usepackage{array}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage[right]{eurosym}
+\usepackage[subfigure,titles]{tocloft}
+\usepackage[pdfpagelabels=true]{hyperref}
+\usepackage[ngerman]{babel}
+\usepackage{booktabs}
+\usepackage{listings}
+\lstset{basicstyle=\footnotesize, captionpos=b, breaklines=true, showstringspaces=false, tabsize=2, frame=lines, numbers=left, numberstyle=\tiny, xleftmargin=2em, framexleftmargin=2em}
+\makeatletter
+\def\l@lstlisting#1#2{\@dottedtocline{1}{0em}{1em}{\hspace{1,5em} Lst. #1}{#2}}
+\makeatother
+\geometry{a4paper, top=27mm, left=30mm, right=20mm, bottom=35mm, headsep=10mm, footskip=12mm}
+\hypersetup{unicode=false, pdftoolbar=true, pdfmenubar=true, pdffitwindow=false, pdfstartview={FitH},
+	pdftitle={Technische Dokumentation MCPS-Drohne},
+	pdfauthor={Ingo Hjalmar Speer, Marcel Wedel, Nico Müller, Tobias Klausmann},
+	pdfsubject={Technische Dokumentation MCPS-Drohne},
+	pdfcreator={\LaTeX\ with package \flqq hyperref\frqq},
+	pdfproducer={pdfTeX \the\pdftexversion.\pdftexrevision},
+	pdfkeywords={Technische Dokumentation MCPS Drohne},
+	pdfnewwindow=true,
+	colorlinks=true,linkcolor=black,citecolor=black,filecolor=magenta,urlcolor=black}
+\pdfinfo{/CreationDate (D:20110620133321)}
+\begin{document}
+\titlespacing{\section}{0pt}{12pt plus 4pt minus 2pt}{-6pt plus 2pt minus 2pt}
+% Kopf- und Fusszeile
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\leftmark}{\rightmark}
+\pagestyle{fancy}
+\lhead{}
+\chead{}
+\rhead{\thesection\space\contentsname}
+\lfoot{Technische Dokumentation MCPS-Drohne}
+\cfoot{}
+\rfoot{ Seite \thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+% Vorspann
+\renewcommand{\thesection}{\Roman{section}}
+\renewcommand{\theHsection}{\Roman{section}}
+\pagenumbering{roman}
+% ----------------------------------------------------------------------------------------------------------
+% Titelseite
+% ----------------------------------------------------------------------------------------------------------
+\thispagestyle{empty}
+\begin{center}
+	\includegraphics[width=5cm]{img/thm2.png}\\
+	\vspace*{2cm}
+	\Large
+	\textbf{Fachbereich}\\
+	\textbf{Mathematik, Naturwissenschaften und Informatik }\\
+	\vspace*{2cm}
+	\Huge
+	\textbf{Fuzzy-Regelung Ausarbeitung}\\
+	\vspace*{1.5cm}
+	\textbf{Künstliche Intiligenz}\\
+	\vspace*{2cm}
+	
+	\vfill
+	\normalsize
+	\newcolumntype{x}[1]{>{\raggedleft\arraybackslash\hspace{0pt}}p{#1}}
+	\begin{tabular}{x{6cm}p{7.5cm}}
+		\rule{0mm}{5ex}\textbf{Autoren:} 
+		\newline 
+		\newline Joel Bartelheimer
+		\newline joel.bartelheimer@mni.thm.de
+		\newline 
+		\newline Nico Müller
+		\newline nico.mueller@mni.thm.de
+		\newline
+		\rule{0mm}{5ex}\textbf{Dozenten:} & Prof. Dr.\\ 
+		\rule{0mm}{5ex}\textbf{Abgabedatum:} & 31.08.2016 \\ 
+	\end{tabular} 
+\end{center}
+\pagebreak
+
+% ----------------------------------------------------------------------------------------------------------
+% Verzeichnisse
+% ----------------------------------------------------------------------------------------------------------
+% TODO Typ vor Nummer
+\renewcommand{\cfttabpresnum}{Tab. }
+\renewcommand{\cftfigpresnum}{Abb. }
+\settowidth{\cfttabnumwidth}{Abb. 10\quad}
+\settowidth{\cftfignumwidth}{Abb. 10\quad}
+\titlespacing{\section}{0pt}{12pt plus 4pt minus 2pt}{2pt plus 2pt minus 2pt}
+\singlespacing
+\rhead{INHALTSVERZEICHNIS}
+\renewcommand{\contentsname}{II Inhaltsverzeichnis}
+\phantomsection
+\addcontentsline{toc}{section}{\texorpdfstring{II \hspace{0.35em}Inhaltsverzeichnis}{Inhaltsverzeichnis}}
+\addtocounter{section}{1}
+\tableofcontents
+\pagebreak
+\rhead{VERZEICHNISSE}
+\listoffigures
+\pagebreak
+\listoftables
+%\pagebreak
+\renewcommand{\lstlistlistingname}{Listing-Verzeichnis}
+{\labelsep2cm\lstlistoflistings}
+\pagebreak
+% ----------------------------------------------------------------------------------------------------------
+% Inhalt
+% ----------------------------------------------------------------------------------------------------------
+% Abstände Überschrift
+\titlespacing{\section}{0pt}{12pt plus 4pt minus 2pt}{-6pt plus 2pt minus 2pt}
+\titlespacing{\subsection}{0pt}{12pt plus 4pt minus 2pt}{-6pt plus 2pt minus 2pt}
+\titlespacing{\subsubsection}{0pt}{12pt plus 4pt minus 2pt}{-6pt plus 2pt minus 2pt}
+% Kopfzeile
+\renewcommand{\sectionmark}[1]{\markright{#1}}
+\renewcommand{\subsectionmark}[1]{}
+\renewcommand{\subsubsectionmark}[1]{}
+\lhead{Kapitel \thesection}
+\rhead{\rightmark}
+\onehalfspacing
+\renewcommand{\thesection}{\arabic{section}}
+\renewcommand{\theHsection}{\arabic{section}}
+\setcounter{section}{0}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+% ----------------------------------------------------------------------------------------------------------
+% Einleitung
+% ----------------------------------------------------------------------------------------------------------
+\section{Einleitung}
+
+\subsection{Anwendungsgebiete}
+
+\section{Fuzzy-Logic Grundlagen}
+
+Obwohl diese Ausarbeitung sich auf Fuzzy-Regelung spezialisiert, ist es notwendig die Grundbegriffe der Fuzzy-Logic zu verstehen. Die theoretischen Konzepte von Fuzzy-Mengen, Fuzzy-Realtionen sowie Fuzzy-Operationen werden in diesem Kapitel wiederholt.
+
+\subsection{Fuzzy-Logic Allgemein}
+
+In der klassichen Mengenlehre, in der Domaine von Fuzzy-Logic auch scharfe Logig genannt, hat ein jedes Element $x_i$ eine eindeutige Zugehörigkeit zu einer Menge $X$. Dies bedeutet das jedes Element $x_i$ den Zugehörigkeitsgrad $\mu$ von genau $1$ oder $0$ hat. Diese strikte Klassifizierung ist im menschlichen Verständniss nicht intuitiv ausgeprägt. Einem Menschen fällt es einfacher eine wage Aussage wie z.B. "in etwa", "relativ groß" o.Ä. zu treffen. Mithilfe der Fuzzy-Logic wird der strikte Zugehörigkeitsgrad aufgelöst, sodass jedes Element auch nur zum Teil einer Fuzzy-Menge angehören kann (siehe Abschnitte \ref{subsection:Fuzzy-Mengen}).
+
+\label{subsection:Fuzzy-Mengen}
+\subsection{Fuzzy-Mengen}
+
+In der Domaine der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrere Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Definitionsmenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1] hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören.
+
+\subsection{Fuzzy-Relationen}
+
+\subsection{Fuzzy-Operationen}
+
+\section{Komponenten eines Fuzzy-Reglers}
+
+In diesem Kapitel werden die verschiedenen Komponenten einer Fuzzy-Regelung erläutert. Ein Fuzzy-Regler besteht im allgemeinen aus einem sogennanten Fuzzifizierungs-Interface, der Wissenbasis, der Entscheidungslogik sowie dem Defuzzifizierungs-Interface. Die Komponenten und deren Zusammenhänge werden in Abbildung dargestellt.
+
+
+\subsection{Fuzzifizierungs-Interface}
+
+Bei der sogennanten Fuzzifizierung geht es darum einen analogen Eingangswert 
+
+
+% ----------------------------------------------------------------------------------------------------------
+% Literatur
+% ----------------------------------------------------------------------------------------------------------
+
+\end{document}
