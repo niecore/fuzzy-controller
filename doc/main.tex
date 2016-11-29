@@ -157,7 +157,19 @@ In der klassichen Mengenlehre, in der Domaine von Fuzzy-Logic auch scharfe Logig
 \label{subsection:Fuzzy-Mengen}
 \subsection{Fuzzy-Mengen}
 
-In der Domaine der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrere Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Definitionsmenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1] hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören.
+In der Domaine der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrere Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Wertemenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1] hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören. Die Menge aller Fuzzy-Mengen von $X$ wird als $F(X)$ bezeichnet.
+
+Beispiel Fuzzy Mengen
+
+\subsubsection{Linguistische Terme}
+
+Um auf eine Fuzzy-Mengen innheralb des Fuzzifizierungs-Interface oder der Entscheidungslogik zu referenzieren, werden zu den Fuzzy-Mengen Linguistische Terme definiert. Linguistische Terme sind formal nur Bezeichner für Fuzzy-Mengen. Es ist jedoch Sinnvoll erst den Linguistische Term und anschließend die dazu passende Fuzzy-Menge zu konstruieren. Die Definition dieser Zugehörigkeit wird auch Partitionierung genannt. Es ist Aufgabe des Domain-Experten diese Partitionierung vorzunehmen.
+
+
+
+\subsection{Fuzzifizierungs-Interface}
+
+Bei der sogennanten Fuzzifizierung geht es darum einen kontinuirlichen analogen Eingangswert aus der Definitionsmenge $x$ in eine Menge von Zugehorigkeitsgraden zu den Fuzzy-Mengen $F(X)$ umzuwandeln. Die Menge aller Zugehorigkeitsgrade zu $F(X)$ kann so als fuzziefizierte Eingangsgröße angesehen werden. Diese Einganggrößen verändern ihren Wert stetig wenn sich auch der analoge Eingangswert verändert. 
 
 \subsection{Fuzzy-Relationen}
 
@@ -167,12 +179,9 @@ In der Domaine der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ih
 
 In diesem Kapitel werden die verschiedenen Komponenten einer Fuzzy-Regelung erläutert. Ein Fuzzy-Regler besteht im allgemeinen aus einem sogennanten Fuzzifizierungs-Interface, der Wissenbasis, der Entscheidungslogik sowie dem Defuzzifizierungs-Interface. Die Komponenten und deren Zusammenhänge werden in Abbildung dargestellt.
 
+\subsection{Entscheidungslogik}
 
-\subsection{Fuzzifizierungs-Interface}
-
-Bei der sogennanten Fuzzifizierung geht es darum einen analogen Eingangswert 
-
-
+Die Entscheidungslogik versucht aus der bereits fuzzifizierten unscharfen Eingangsgröße eine unscharfe Ausgangsgröße oder Stellgröße abzuleiten. Dazu wird eine sogennante Regelbasis benötigt. Die Regelbasis besteht aus eine Menge von Kontrollregeln die meist von einem Domain-Experten aufgestellt werden. Jede Kontrollregeln hat die Form $WENN$
 % ----------------------------------------------------------------------------------------------------------
 % Literatur
 % ----------------------------------------------------------------------------------------------------------
