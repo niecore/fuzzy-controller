@@ -1,7 +1,7 @@
 /**
   * Created by nico on 12.01.17.
   */
-class FuzzyCarController(controlledCar: Drivable, chasedCar: Drivable) {
+class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, chasedCar: Drivable) {
 
 
 
@@ -11,12 +11,16 @@ class FuzzyCarController(controlledCar: Drivable, chasedCar: Drivable) {
     var speed = controlledCar.speed
 
     // fuzzyfication
-
-
-
     // fuzzy logic
-
     // defuzzyfication
 
+
+    logic.rules.foreach{
+      rule => {
+        rule.outputs.apply(
+          rule.inputs.foldLeft(100.0)(_ min _.apply(distance).value)
+        )
+      }
+    }
   }
 }

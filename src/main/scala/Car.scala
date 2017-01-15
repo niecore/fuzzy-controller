@@ -13,12 +13,12 @@ class Car extends Drivable{
 
   def tick(): Unit = {
     val now = System.currentTimeMillis()
-    val sampleTime = now -past
+    val sampleTime = (now - past) / 1000
     speed += acceleration * sampleTime
     position += (0.5 * acceleration * sampleTime * sampleTime) * speed
 
-    if (speed == 0) { // Set acceleration to 0 when we stopped the car.
-      acceleration = 0;
-    }
+    println("Acc: " + acceleration + " Speed: " + speed + " Pos: " + position + " SampleTime: " + sampleTime)
+
+    past = now;
   }
 }
