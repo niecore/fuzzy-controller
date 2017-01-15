@@ -7,63 +7,46 @@ class FuzzyKnowledgeDriving {
   // Einheit; Meter
   // Wertebeich: 0-55
   def isVeryClose(distance: Double): FuzzyBool = {
-    return new FuzzyBool(triangle(distance, None, 10, Some(20)))
+    new FuzzyBool(triangle(distance, None, 10, Some(20)))
   }
 
   def isClose(distance: Double): FuzzyBool = {
-    return triangle(distance, 15, 25, 35)
+    new FuzzyBool(triangle(distance, Some(15), 25, Some(35)))
   }
 
-  def isNormal(distance: Double): FuzzyBool = {
-    return triangle(distance, 25, 35, 45)
+  val isNormal = (input: Double) => {
+    new FuzzyBool(triangle(input, Some(25), 35, Some(45)))
   }
+
 
   def isFar(distance: Double): FuzzyBool = {
-    return triangle(distance, 35, 45, 55)
+    new FuzzyBool(triangle(distance, Some(35), 45, Some(55)))
   }
 
   def isVeryFar(distance: Double): FuzzyBool = {
-    return triangleRightOpen(distance, 45, 55)
+    new FuzzyBool(triangle(distance, Some(45), 55, None))
   }
 
   // Defuzzyfication
   // Einheit: m/s^2
   // Wertbereich: [-1...1]
-
   def brake(alpha: Double): Double => FuzzyBool = {
-    return (x: Double) => triangle(x, -1, -0.5, 0)
+    return (x: Double) => new FuzzyBool(triangle(x, Some(-1), -0.5, Some(0)))
   }
 
   def roll(alpha: Double): Double => FuzzyBool = {
-    return (x: Double) => triangle(x, -0.5, 0, +0.5)
+    return (x: Double) => new FuzzyBool(triangle(x, Some(-0.5), 0, Some(+0.5)))
   }
 
   def speed(alpha: Double): Double => FuzzyBool = {
-    return (x: Double) => triangle(x, 0, 0.5, 1)
+    return (x: Double) => new FuzzyBool(triangle(x, Some(0), 0.5, Some(1)))
   }
 
-}
 
-def triangleLeftOpen(x: Double, m: Double, b: Double) : FuzzyBool = {
-  // source:
-  // http://www.dma.fi.upm.es/recursos/aplicaciones/logica_borrosa/web/fuzzy_inferencia/funpert_en.htm
-  var retval: Double = 0
-  if(x <= m) {
-    retval = 1
-  } else if(x <= b) {
-    retval = b-x / b-m
-  } else {
-    retval = 0
-  }
-  return new FuzzyBool(retval)
-}
-
-def triangleRightOpen(x: Double, a: Double, m: Double) : FuzzyBool = {
-  // source:
-  // http://www.dma.fi.upm.es/recursos/aplicaciones/logica_borrosa/web/fuzzy_inferencia/funpert_en.htm
-  var retval: Double = 0
-
-  return new FuzzyBool(retval)
+  // Rules
+  var rules = List[FuzzyRule](  new FuzzyRule(List(isFar), speed),
+                                new FuzzyRule(List(isNormal), roll),
+                                new FuzzyRule(List(isClose), brake))
 }
 
 def triangle(x: Double, a: Option[Double], m: Double, b: Option[Double]): Double = {

@@ -9,7 +9,10 @@ class FuzzyCarController(controlledCar: Drivable, chasedCar: Drivable) {
     // measure
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed
+
     // fuzzyfication
+
+
 
     // fuzzy logic
 
