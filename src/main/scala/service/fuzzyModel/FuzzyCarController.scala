@@ -29,20 +29,19 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
         )
 
         var min = alpha.foldLeft(Double.MaxValue)(_ min _.value)
-        println(rule.name + ": " + min)
+        //println(rule.name + ": " + min)
         rule.output.apply(min)
       }
     )
 
-    def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool], operator: (Double, Double) => Double = Math.max): ((Double) => FuzzyBool) = {
-      (d) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => operator(a, b(d).value)))
+    def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool]): ((Double) => FuzzyBool) = {
+      (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
     }
 
 
-    // take range from output
-    var output = (-1000 to 2000).map(e => combineOutputRules(test, Math.max)(e.toDouble)).map(f => f.value).toList
 
-    //for(i <- (0 to 2999))println(i + ";" + output(i).toString)
+    // take range from output
+    var output = (-1000 to 2000).map(e => combineOutputRules(test)(e.toDouble)).map(f => f.value).toList
 
     def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
       (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
@@ -53,13 +52,13 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
     }
 
     def momMethod: List[Double] => Int = {
-      (list) => (list.zipWithIndex.filter(e=> e._1 == list.max).map(e => e._2).foldLeft(0.toFloat){
-        _ + _
-      }).toInt
+      (list) => {
+        var total = getMaxValuesWithIndixes.apply(list)
+        (total.map(e => e._2).foldLeft(0.toDouble) {
+          _ + _
+        } / total.length).toInt
+      }
     }
 
-    print(output)
-    print("List: " + maxMethod.apply(output))
-    print("List: " + momMethod.apply(output))
   }
 }

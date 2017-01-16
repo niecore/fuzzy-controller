@@ -1,6 +1,6 @@
 package service.fuzzyModel
 
-import service.fuzzyModel.core.{FuzzyBool, FuzzyKnowledgeBase, FuzzyRule}
+import service.fuzzyModel.core.{FuzzyBool, FuzzyInput, FuzzyKnowledgeBase, FuzzyRule}
 
 /**
   * Created by nico on 15.01.17.
@@ -9,6 +9,12 @@ object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
   // Fuzzyfication
   // Einheit; Meter
   // Wertebeich: 0-55
+
+  val distanceInput = new FuzzyInput("Distance", 0, 1000)
+  val speedInput = new FuzzyInput("Speed", 0, 250)
+
+
+
   def isVeryClose(distance: Double): FuzzyBool = {
     var value = new FuzzyBool(triangle(distance, None, 10, Some(20)))
     //println("isVeryClose " + value.value)
