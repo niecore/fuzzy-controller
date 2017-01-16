@@ -44,12 +44,12 @@ object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
   // Wertbereich: [-1...1]
   def brake(alpha: Double): Double => FuzzyBool = {
     //println("Break: " + alpha)
-    return (x: Double) => new FuzzyBool(triangle(x, Some(-1000), -500, Some(0)))
+    return (x: Double) => new FuzzyBool(Math.min (alpha, triangle(x, Some(-1000), -500, Some(0))))
   }
 
   def roll(alpha: Double): Double => FuzzyBool = {
     //println("Roll: " + alpha)
-    return (x: Double) => new FuzzyBool(triangle(x, Some(-500), 0, Some(500)))
+    return (x: Double) => new FuzzyBool(Math.min (alpha, triangle(x, Some(-500), 0, Some(500))))
   }
 
   def speed(alpha: Double): Double => FuzzyBool = {

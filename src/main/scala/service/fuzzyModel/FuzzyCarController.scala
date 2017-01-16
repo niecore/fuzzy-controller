@@ -25,29 +25,29 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
         )
 
         var min = alpha.foldLeft(Double.MaxValue)(_ min _.value)
+        println(rule.name + ": " + min)
         rule.output.apply(min)
       }
     )
 
-    def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool], operator: (Double, Double)=> Double): ((Double)=> FuzzyBool) = {
-      (d) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a,b) => operator(a, b(d).value)))
+    def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool], operator: (Double, Double) => Double = Math.max): ((Double) => FuzzyBool) = {
+      (d) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => operator(a, b(d).value)))
     }
 
-    var range = (-1000 to 5000)
+    var output = (-1000 to 2000).map(e => combineOutputRules(test, Math.max)(e.toDouble))
+      .map(f => f.value)
 
-    var test3 = range.map( e => test(0))
+    for(i <- (0 to 2999))println(i + ";" + output(i).toString)
 
-    print(test3)
+    var max = output.zipWithIndex.maxBy(_._1)._2
 
-    /*    var outputs : List[(Double => FuzzyBool)] = Nil
-        outputs = logic.rules.map(
-          rule => {
-            rule.output.apply(
-              rule.inputs.foldLeft(Double.MaxValue)(_ min _.apply(distance).value)
-            )
-          }
-        )*/
+    var maxList = for {
+      i <- output.indices
 
-    //println(outputs)
+    }
+    if(max != 500){
+      println("here")
+    }
+    print(max)
   }
 }
