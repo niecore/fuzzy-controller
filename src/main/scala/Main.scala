@@ -8,14 +8,14 @@ object Main extends App {
   val carFront, carBack = new Car
   val controller = new FuzzyCarController(FuzzyKnoledgeChaseCar, carBack, carFront)
 
-  carFront.engineForce = 5000;
+  carFront.engineForce = 8000;
 
   while(true){
-    if(carFront.speed >= 100)
+    if(carFront.speed >= 5)
       carFront.engineForce = 0
     carFront.tick()
     //carBack.tick()
     controller.tick()
-    Thread.sleep(1000)
+    Thread.sleep(100)
   }
 }

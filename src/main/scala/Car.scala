@@ -31,7 +31,7 @@ class Car extends Drivable{
 
   def tick(): Unit = {
     val now = System.currentTimeMillis()
-    val sampleTime = (now - past) / 1000
+    val sampleTime: Double = (now - past) / 1000.0
 
     // F = a * m
     var force = 0.0;
@@ -39,16 +39,22 @@ class Car extends Drivable{
     // Luftwiederstand
     force += ((Physics.airDensity / 2) * crossSectionalArea * windDragCoefficient * speed * speed)
     // Rollwiederstand
-    force += (mass * Physics.friction * Physics.gravity)
+    if(speed > 0) {
+      force += (mass * Physics.friction * Physics.gravity)
+    }
     // Steigungswiederstand
     force += (mass * Physics.gravity * Math.sin(0))
-    // Beschleunigungswiederstand
+    // Beschleunigungswiederstandi
     //force += (mass * acceleration)
 
-    acceleration = (engineForce -force) / mass
+    acceleration = (engineForce - force) / mass
+    speed += (acceleration * sampleTime)
 
-    speed += acceleration * sampleTime
-    position += (0.5 * acceleration * sampleTime * sampleTime) * speed
+    if(speed < 0) {
+      speed = 0;
+    }
+
+    position += ((0.5 * acceleration * sampleTime * sampleTime) + speed)
 
     println("Acc: " + acceleration + " Speed: " + speed + " Pos: " + position + " SampleTime: " + sampleTime)
 
