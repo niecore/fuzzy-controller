@@ -1,5 +1,4 @@
 import service.physicalModel.Car
-import service.FuzzyKnoledgeChaseCar
 import service.fuzzyModel.{FuzzyCarController, FuzzyKnowledgeBaseCar}
 
 /**
