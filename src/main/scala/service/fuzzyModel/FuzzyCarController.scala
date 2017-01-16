@@ -3,10 +3,14 @@ package service.fuzzyModel
 import service.fuzzyModel.core.{FuzzyBool, FuzzyKnowledgeBase}
 import service.physicalModel.Drivable
 
+import scala.util.Random
+
 /**
   * Created by nico on 12.01.17.
   */
 class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, chasedCar: Drivable) {
+
+  var random = new Random()
 
   def tick(): Unit = {
     // measure
@@ -34,20 +38,28 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
       (d) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => operator(a, b(d).value)))
     }
 
-    var output = (-1000 to 2000).map(e => combineOutputRules(test, Math.max)(e.toDouble))
-      .map(f => f.value)
 
-    for(i <- (0 to 2999))println(i + ";" + output(i).toString)
+    // take range from output
+    var output = (-1000 to 2000).map(e => combineOutputRules(test, Math.max)(e.toDouble)).map(f => f.value).toList
 
-    var max = output.zipWithIndex.maxBy(_._1)._2
+    //for(i <- (0 to 2999))println(i + ";" + output(i).toString)
 
-    var maxList = for {
-      i <- output.indices
-
+    def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
+      (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
     }
-    if(max != 500){
-      println("here")
+
+    def maxMethod: List[Double] => Int = {
+      (list) => Random.shuffle(getMaxValuesWithIndixes.apply(list).map(e => e._2).toList).head
     }
-    print(max)
+
+    def momMethod: List[Double] => Int = {
+      (list) => (list.zipWithIndex.filter(e=> e._1 == list.max).map(e => e._2).foldLeft(0.toFloat){
+        _ + _
+      }).toInt
+    }
+
+    print(output)
+    print("List: " + maxMethod.apply(output))
+    print("List: " + momMethod.apply(output))
   }
 }
