@@ -1,3 +1,5 @@
+package service.fuzzyModel.core
+
 /**
   * Created by nico on 12.01.17.
   */

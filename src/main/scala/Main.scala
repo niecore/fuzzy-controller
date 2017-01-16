@@ -1,3 +1,7 @@
+import service.physicalModel.Car
+import service.FuzzyKnoledgeChaseCar
+import service.fuzzyModel.{FuzzyCarController, FuzzyKnowledgeBaseCar}
+
 /**
   * Created by nico on 12.01.17.
   */
@@ -6,7 +10,7 @@ object Main extends App {
 
 
   val carFront, carBack = new Car
-  val controller = new FuzzyCarController(FuzzyKnoledgeChaseCar, carBack, carFront)
+  val controller = new FuzzyCarController(FuzzyKnowledgeBaseCar, carBack, carFront)
 
   carFront.engineForce = 8000;
 

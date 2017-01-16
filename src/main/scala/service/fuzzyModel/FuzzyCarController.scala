@@ -1,3 +1,8 @@
+package service.fuzzyModel
+
+import service.fuzzyModel.core.FuzzyKnowledgeBase
+import service.physicalModel.Drivable
+
 /**
   * Created by nico on 12.01.17.
   */
@@ -13,8 +18,6 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
     // fuzzyfication
     // fuzzy logic
     // defuzzyfication
-
-
     logic.rules.foreach{
       rule => {
         rule.outputs.apply(

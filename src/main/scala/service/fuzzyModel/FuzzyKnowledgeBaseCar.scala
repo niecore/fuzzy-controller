@@ -1,7 +1,11 @@
+package service.fuzzyModel
+
+import service.fuzzyModel.core.{FuzzyBool, FuzzyKnowledgeBase, FuzzyRule}
+
 /**
   * Created by nico on 15.01.17.
   */
-object FuzzyKnoledgeChaseCar extends FuzzyKnowledgeBase {
+object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
   // Fuzzyfication
   // Einheit; Meter
   // Wertebeich: 0-55
