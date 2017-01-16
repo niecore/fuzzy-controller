@@ -18,7 +18,7 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
     logic.rules.foreach{
       rule => {
         rule.outputs.apply(
-          rule.inputs.foldLeft(100.0)(_ min _.apply(distance).value)
+          rule.inputs.foldLeft(Double.MaxValue)(_ min _.apply(distance).value)
         )
       }
     }

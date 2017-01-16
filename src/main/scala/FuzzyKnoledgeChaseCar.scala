@@ -7,32 +7,32 @@ object FuzzyKnoledgeChaseCar extends FuzzyKnowledgeBase {
   // Wertebeich: 0-55
   def isVeryClose(distance: Double): FuzzyBool = {
     var value = new FuzzyBool(triangle(distance, None, 10, Some(20)))
-    println("isVeryClose " + value.value)
+    //println("isVeryClose " + value.value)
     value
   }
 
   def isClose(distance: Double): FuzzyBool = {
     var value = new FuzzyBool(triangle(distance, Some(15), 25, Some(35)))
-    println("isClose: " + value.value)
+    //println("isClose: " + value.value)
     value
   }
 
   val isNormal = (input: Double) => {
     var value = new FuzzyBool(triangle(input, Some(25), 35, Some(45)))
-    println("isNormal " + value.value)
+    //println("isNormal " + value.value)
     value
   }
 
 
   def isFar(distance: Double): FuzzyBool = {
     var value = new FuzzyBool(triangle(distance, Some(35), 45, Some(55)))
-    println("isFar " + value.value)
+    //println("isFar " + value.value)
     value
   }
 
   def isVeryFar(distance: Double): FuzzyBool = {
     var value = new FuzzyBool(triangle(distance, Some(45), 55, None))
-    println("isVeryFar " + value.value)
+    //println("isVeryFar " + value.value)
     value
   }
 
@@ -40,17 +40,17 @@ object FuzzyKnoledgeChaseCar extends FuzzyKnowledgeBase {
   // Einheit: m/s^2
   // Wertbereich: [-1...1]
   def brake(alpha: Double): Double => FuzzyBool = {
-    println("Break: " + alpha)
+    //println("Break: " + alpha)
     return (x: Double) => new FuzzyBool(triangle(x, Some(-1), -0.5, Some(0)))
   }
 
   def roll(alpha: Double): Double => FuzzyBool = {
-    println("Roll: " + alpha)
+    //println("Roll: " + alpha)
     return (x: Double) => new FuzzyBool(triangle(x, Some(-0.5), 0, Some(+0.5)))
   }
 
   def speed(alpha: Double): Double => FuzzyBool = {
-    println("Speed: " + alpha)
+    //println("Speed: " + alpha)
     return (x: Double) => new FuzzyBool(triangle(x, Some(0), 0.5, Some(1)))
   }
 
