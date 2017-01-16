@@ -54,7 +54,7 @@ object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
 
   def speed(alpha: Double): Double => FuzzyBool = {
     //println("Speed: " + alpha)
-    return (x: Double) => new FuzzyBool(triangle(x, Some(0), 2000, Some(5000)))
+    return (x: Double) => new FuzzyBool(Math.min (alpha, triangle(x, Some(0), 2000, Some(5000))))
   }
 
   // Rules
