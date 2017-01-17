@@ -10,7 +10,7 @@ object Main extends App {
   val carFront, carBack = new Car
   val controller = new FuzzyCarController(DefaultConfig, carBack, carFront)
 
-  carFront.engineForce = 6000;
+  carFront.engineForce = 3000;
 
   while(true){
     if(carFront.speed >= 28)

@@ -30,7 +30,7 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
           }
         )
         var minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
-        print(rule.name + ": " + minAcceptance + " ")
+        println(rule.name + ": " + minAcceptance + " ")
         ((x: Double) => new FuzzyBool(Math.min(minAcceptance,rule.outputs.func.apply(x).value)), rule.outputs.adapter)
       }
     )

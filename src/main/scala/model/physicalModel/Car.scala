@@ -7,7 +7,7 @@ object Physics{
   // kg / m^3
   val airDensity = 1.2
   // no dimension
-  val friction = 0.05
+  val friction = 0.02
   // m/s^2
   val gravity = 9.81
 
@@ -62,7 +62,10 @@ class Car extends Drivable{
       speed = 0;
     }
 
-    position += ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
+    var posDelta = ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
+    if(posDelta >= 0) {
+      position += posDelta
+    }
 
     total += sampleTime
     println("Acc: " + BigDecimal(acceleration).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Speed: " + BigDecimal(Physics.speedToKmh(speed)).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Pos: " + BigDecimal(position).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " SampleTime: " + sampleTime + " Total: " + BigDecimal(total).setScale(2,BigDecimal.RoundingMode.HALF_UP))

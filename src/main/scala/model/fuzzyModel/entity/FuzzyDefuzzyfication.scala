@@ -11,7 +11,10 @@ case class FuzzyDefuzzyficationFunc(val name: String, val func: (List[Double]) =
 object DefuzzyficationFunctions {
 
   private def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
-    (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
+    (list) => {
+      var maxValue = list.max
+      list.zipWithIndex.filter(e=> e._1 == maxValue)
+    }
   }
 
   private def integrateSimpson(f:Double=>Double, a:Double, b:Double, steps:Double)={
