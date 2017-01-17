@@ -10,38 +10,31 @@ import scala.util.Random
   */
 class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, chasedCar: Drivable) {
 
-  var random = new Random()
+  var random = new Random(1234)
 
   def tick(): Unit = {
     // measure
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed
 
-    // fuzzyfication
-    // fuzzy logic
-    // defuzzyfication
-    var test = logic.rules.map(
+    var outputRules = logic.rules.map(
       rule => {
-        var alpha = rule.inputs.map(
+        var acceptance = rule.inputs.map(
           e => {
-            e.apply(distance)
+            e.adapter.name match {
+              case "Distance" => e.func.apply(distance)
+              case "Speed" => e.func.apply(speed)
+            }
           }
         )
-
-        var min = alpha.foldLeft(Double.MaxValue)(_ min _.value)
-        //println(rule.name + ": " + min)
-        rule.output.apply(min)
+        var minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
+        println(rule.name + ": " + minAcceptance)
+        ((x: Double) => new FuzzyBool(Math.min(minAcceptance,rule.outputs.func.apply(x).value)), rule.outputs.adapter)
       }
     )
-
     def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool]): ((Double) => FuzzyBool) = {
       (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
     }
-
-
-
-    // take range from output
-    var output = (-1000 to 2000).map(e => combineOutputRules(test)(e.toDouble)).map(f => f.value).toList
 
     def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
       (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
@@ -60,5 +53,25 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
       }
     }
 
+    // group OutputRules by outputAdapters
+    var groupedOutput = outputRules.groupBy(_._2).transform(
+      (k,v) => v.map( e => e._1)
+    )
+
+    // calculate output rules
+    groupedOutput.foreach(
+      (e)=> {
+        var output = (e._1.minVal to e._1.maxVal).map(
+          x => combineOutputRules(e._2)(x.toDouble)
+        ).map(
+          f => f.value
+        ).toList
+
+        println(output)
+        e._1.name match {
+          case "Force" => controlledCar.engineForce = momMethod.apply(output); println(controlledCar.engineForce)
+        }
+      }
+    )
   }
 }

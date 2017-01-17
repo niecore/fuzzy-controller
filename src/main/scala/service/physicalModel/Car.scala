@@ -10,6 +10,10 @@ object Physics{
   val friction = 0.05
   // m/s^2
   val gravity = 9.81
+
+  def speedToKmh(ms:Double): Double = {
+    ms * 3.6
+  }
 }
 
 class Car extends Drivable{
