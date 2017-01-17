@@ -22,6 +22,7 @@ object RuleBase {
   val isFar = new FuzzyTerm("isFar", distanceInput,             (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(300), 400, Some(500))))
   val isVeryFar = new FuzzyTerm("isVeryFar", distanceInput,     (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(400), 500, None)))
 
+  val isFixed = new FuzzyTerm("isFixed", speedInput,        (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(0), 0.5, Some(1))))
   val isSlow = new FuzzyTerm("isSlow", speedInput,          (x) => new FuzzyBool(MembershipFunctions.triangle(x, None, 15, Some(30))))
   val isFast = new FuzzyTerm("isFast", speedInput,          (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(15), 50, Some(100))))
   val isExtreme = new FuzzyTerm("isExtreme", speedInput,    (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(50), 150, None)))
@@ -35,32 +36,34 @@ object RuleBase {
   val medSpeed = new FuzzyTerm("medSpeed", forceOutput,   (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(1000), 2000, Some(3000))))
   val fullSpeed = new FuzzyTerm("fullSpeed", forceOutput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(2000), 3000, None)))
 
-  val terms =  isVeryClose :: isClose :: isNormal :: isFar :: isVeryFar :: isSlow :: isFast :: isExtreme :: fullBrake :: brake :: roll :: speed :: fullSpeed :: Nil
+  val terms =  isFixed :: isVeryClose :: isClose :: isNormal :: isFar :: isVeryFar :: isSlow :: isFast :: isExtreme :: fullBrake :: brake :: roll :: speed :: fullSpeed :: Nil
 
   // Rules
   val rules = List[FuzzyRule](
+    //new FuzzyRule("isVeryFar, isFixed", List(isVeryFar, isSlow), fullSpeed),
+    //new FuzzyRule("isVeryFar, isFixed", List(isVeryFar, isFast), fullSpeed),
+    new FuzzyRule("isClose, isFixed", List(isClose, isFixed), fullSpeed),
+
     new FuzzyRule("isVeryFar, isSlow", List(isVeryFar, isSlow), fullSpeed),
     new FuzzyRule("isVeryFar, isFast", List(isVeryFar, isFast), fullSpeed),
     new FuzzyRule("isVeryFar, isExtreme", List(isVeryFar, isExtreme), fullSpeed),
 
     new FuzzyRule("isFar, isSlow", List(isFar, isSlow), fullSpeed),
-    new FuzzyRule("isFar, isFast", List(isFar, isFast), fullSpeed),
-    new FuzzyRule("isFar, isExtreme", List(isFar, isExtreme), fullSpeed),
+    new FuzzyRule("isFar, isFast", List(isFar, isFast), medSpeed),
+    new FuzzyRule("isFar, isExtreme", List(isFar, isExtreme), speed),
 
     new FuzzyRule("isNormal, isSlow", List(isNormal, isSlow), roll),
     new FuzzyRule("isNormal, isFast", List(isNormal, isFast), roll),
     new FuzzyRule("isNormal, isExtreme", List(isNormal, isExtreme), roll),
 
-    new FuzzyRule("isClose, isSlow", List(isClose, isSlow), fullBrake),
-    new FuzzyRule("isClose, isFast", List(isClose, isFast), fullBrake),
+    new FuzzyRule("isClose, isSlow", List(isClose, isSlow), brake),
+    new FuzzyRule("isClose, isFast", List(isClose, isFast), medBrake),
     new FuzzyRule("isClose, isExtreme", List(isClose, isExtreme), fullBrake),
 
     new FuzzyRule("isVeryClose, isSlow", List(isVeryClose, isSlow), fullBrake),
     new FuzzyRule("isVeryClose, isFast", List(isVeryClose, isFast), fullBrake),
     new FuzzyRule("isVeryClose, is Extreme", List(isVeryClose, isExtreme), fullBrake)
-
-
   )
 
-  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Mean of Maxima").get
+  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Center of Gravity").get
 }
