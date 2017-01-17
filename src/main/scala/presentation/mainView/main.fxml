@@ -115,7 +115,7 @@
    <top>
       <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Play" />
+            <Button onAction="#onPlay" mnemonicParsing="false" text="Play" />
             <Button mnemonicParsing="false" text="Pause" />
             <Button mnemonicParsing="false" text="Reset" />
          </children>
