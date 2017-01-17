@@ -42,5 +42,5 @@ object RuleBase {
     new FuzzyRule("Rule4", List(isClose), brake),
     new FuzzyRule("Rule5", List(isVeryClose), fullStop))
 
-  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Mean of Maxima")
+  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Mean of Maxima").get
 }
