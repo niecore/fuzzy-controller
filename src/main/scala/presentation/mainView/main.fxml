@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.chart.AreaChart?>
 <?import javafx.scene.chart.CategoryAxis?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<BorderPane fx:controller="presentation.mainView.MainPresenter" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="711.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+
+<BorderPane maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="711.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.mainView.MainPresenter">
    <center>
       <SplitPane dividerPositions="0.7181008902077152" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
          <items>
@@ -68,11 +72,15 @@
                         </GridPane>
                      </children>
                   </HBox>
-                  <VBox prefHeight="200.0" prefWidth="100.0" HBox.hgrow="ALWAYS">
+                  <StackPane prefHeight="150.0" prefWidth="200.0">
                      <children>
-                        <Label alignment="TOP_LEFT" text="Label" />
+                        <Label fx:id="tfDist" alignment="TOP_LEFT" text="Label">
+                           <font>
+                              <Font size="34.0" />
+                           </font>
+                        </Label>
                      </children>
-                  </VBox>
+                  </StackPane>
                   <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
                         <GridPane alignment="TOP_RIGHT" maxHeight="120.0" minHeight="120.0" prefHeight="120.0">
@@ -115,7 +123,7 @@
    <top>
       <HBox alignment="CENTER" BorderPane.alignment="CENTER">
          <children>
-            <Button onAction="#onPlay" mnemonicParsing="false" text="Play" />
+            <Button mnemonicParsing="false" onAction="#onPlay" text="Play" />
             <Button mnemonicParsing="false" text="Pause" />
             <Button mnemonicParsing="false" text="Reset" />
          </children>

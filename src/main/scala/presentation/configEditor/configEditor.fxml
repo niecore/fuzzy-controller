@@ -41,7 +41,7 @@
             <Button mnemonicParsing="false" text="Edit rules" />
             <Pane HBox.hgrow="ALWAYS" />
             <Button mnemonicParsing="false" text="Abort" />
-            <Button mnemonicParsing="false" text="Go" />
+            <Button onAction="#go" mnemonicParsing="false" text="Go" />
          </children>
          <padding>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
