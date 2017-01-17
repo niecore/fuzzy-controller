@@ -22,7 +22,7 @@ class Car extends Drivable{
   // kg
   val mass: Double = 1540.0
   // no dimension
-  val windDragCoefficient: Double = 0.37
+  val windDragCoefficient: Double = 0.67
   // m^2
   val crossSectionalArea: Double = 1.86
 
@@ -34,6 +34,9 @@ class Car extends Drivable{
   var position: Double = 0
   // N = kg * m / s^2
   var engineForce: Double = 0;
+  // km/h
+  var speedKmh: Double = 0;
+
 
   var total: Double = 0;
 
@@ -61,6 +64,8 @@ class Car extends Drivable{
     if(speed < 0) {
       speed = 0;
     }
+
+    speedKmh = Physics.speedToKmh(speed);
 
     var posDelta = ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
     if(posDelta >= 0) {
