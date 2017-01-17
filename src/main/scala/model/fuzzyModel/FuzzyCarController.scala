@@ -3,14 +3,10 @@ package model.fuzzyModel
 import model.fuzzyModel.entity.{FuzzyBool, FuzzyConfig}
 import model.physicalModel.Drivable
 
-import scala.util.Random
-
 /**
   * Created by nico on 12.01.17.
   */
 class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar: Drivable) {
-
-  var random = new Random(1234)
 
   def tick(): Unit = {
     controlledCar.tick()
@@ -19,9 +15,9 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed
 
-    var outputRules = logic.rules.map(
+    val outputRules = logic.rules.map(
       rule => {
-        var acceptance = rule.inputs.map(
+        val acceptance = rule.inputs.map(
           e => {
             e.adapter.name match {
               case "Distance" => e.func.apply(distance)
@@ -29,7 +25,7 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
             }
           }
         )
-        var minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
+        val minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
         println(rule.name + ": " + minAcceptance + " ")
         ((x: Double) => new FuzzyBool(Math.min(minAcceptance,rule.outputs.func.apply(x).value)), rule.outputs.adapter)
       }

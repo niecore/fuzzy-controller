@@ -18,7 +18,7 @@ object Physics{
 
 class Car extends Drivable{
   private var past: Long = System.currentTimeMillis()
-
+  private var paused = false
   // kg
   val mass: Double = 1540.0
   // no dimension
@@ -36,11 +36,33 @@ class Car extends Drivable{
   var engineForce: Double = 0;
   // km/h
   var speedKmh: Double = 0;
+  // s
+  var totalTime: Double = 0;
 
+  def reset(): Unit = {
+    acceleration = 0;
+    speed = 0;
+    speedKmh = 0;
+    engineForce = 0;
+    totalTime = 0;
+    paused = false;
+    past = System.currentTimeMillis()
+  }
 
-  var total: Double = 0;
+  def pause(): Unit = {
+    paused = true;
+  }
+
+  def resume(): Unit = {
+    past = System.currentTimeMillis()
+    paused = false;
+  }
 
   def tick(): Unit = {
+    if(paused) {
+      return
+    }
+
     val now = System.currentTimeMillis()
     val sampleTime: Double = (now - past) / 1000.0
 
@@ -72,8 +94,8 @@ class Car extends Drivable{
       position += posDelta
     }
 
-    total += sampleTime
-    println("Acc: " + BigDecimal(acceleration).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Speed: " + BigDecimal(Physics.speedToKmh(speed)).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Pos: " + BigDecimal(position).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " SampleTime: " + sampleTime + " Total: " + BigDecimal(total).setScale(2,BigDecimal.RoundingMode.HALF_UP))
+    totalTime += sampleTime
+    println("Acc: " + BigDecimal(acceleration).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Speed: " + BigDecimal(Physics.speedToKmh(speed)).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Pos: " + BigDecimal(position).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " SampleTime: " + sampleTime + " Total: " + BigDecimal(totalTime).setScale(2,BigDecimal.RoundingMode.HALF_UP))
 
     past = now;
   }
