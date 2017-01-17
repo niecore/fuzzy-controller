@@ -14,6 +14,16 @@ object DefuzzyficationFunctions {
     (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
   }
 
+  private def integrateSimpson(f:Double=>Double, a:Double, b:Double, steps:Double)={
+    val delta:Double=(b-a)/steps
+    delta*(a until b by delta).foldLeft(0.0)((s,x) => s + (f(x)+4*f((x+x+delta)/2)+f(x+delta))/6)
+  }
+
+  def cogMethod: List[Double] => Int = {
+    (list) => ((list.zipWithIndex.foldLeft(0.toDouble)((s,x) => s + x._1 * x._2)) /
+              (list.zipWithIndex.foldLeft(0.toDouble)((s,x) => s + x._1))).toInt
+  }
+
   def maxMethod: List[Double] => Int = {
     (list) => Random.shuffle(getMaxValuesWithIndixes.apply(list).map(e => e._2).toList).head
   }
@@ -28,6 +38,7 @@ object DefuzzyficationFunctions {
   }
 
   var functionList = List(  new FuzzyDefuzzyficationFunc("Mean of Maxima", momMethod),
-                            new FuzzyDefuzzyficationFunc("Maxium criteria", maxMethod)
+                            new FuzzyDefuzzyficationFunc("Maxium criteria", maxMethod),
+                            new FuzzyDefuzzyficationFunc("Center of Gravity", cogMethod)
   )
 }

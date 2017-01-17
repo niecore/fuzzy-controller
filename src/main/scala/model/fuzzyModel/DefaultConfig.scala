@@ -10,17 +10,17 @@ object DefaultConfig extends FuzzyConfig(RuleBase.fuzzyValueConnector, RuleBase.
 
 object RuleBase {
   // Fuzzyfication
-  val distanceInput = new FuzzyValueConnector("Distance", 0, 1000, true)
+  val distanceInput = new FuzzyValueConnector("Distance", 0, 300, true)
   val speedInput = new FuzzyValueConnector("Speed", 0, 250, true)
   val forceOutput = new FuzzyValueConnector("Force", -3000, 7000, false)
 
   val fuzzyValueConnector = distanceInput :: speedInput :: forceOutput :: Nil
 
-  val isVeryClose = new FuzzyTerm("isVeryClose", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, None, 30, Some(60))))
-  val isClose = new FuzzyTerm("isClose", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(30), 60, Some(90))))
-  val isNormal = new FuzzyTerm("isNormal", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(60), 90, Some(120))))
-  val isFar = new FuzzyTerm("isFar", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(90), 120, Some(150))))
-  val isVeryFar = new FuzzyTerm("isVeryFar", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(120), 150, None)))
+  val isVeryClose = new FuzzyTerm("isVeryClose", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, None, 50, Some(100))))
+  val isClose = new FuzzyTerm("isClose", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(50), 100, Some(150))))
+  val isNormal = new FuzzyTerm("isNormal", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(100), 150, Some(200))))
+  val isFar = new FuzzyTerm("isFar", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(150), 200, Some(250))))
+  val isVeryFar = new FuzzyTerm("isVeryFar", distanceInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(200), 250, None)))
 
   val isSlow = new FuzzyTerm("isVeryClose", speedInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, None, 50, Some(100))))
   val isFast = new FuzzyTerm("isNormal", speedInput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(50), 100, Some(150))))
@@ -42,5 +42,5 @@ object RuleBase {
     new FuzzyRule("Rule4", List(isClose), brake),
     new FuzzyRule("Rule5", List(isVeryClose), fullStop))
 
-  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Mean of Maxima")
+  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Mean of Maxima").get
 }

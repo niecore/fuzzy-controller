@@ -52,8 +52,12 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
           f => f.value
         ).toList
 
+        // defuzzyfication
+        var setpoint = (e._1.minVal to e._1.maxVal)(logic.defuzzy.func.apply(output))
+
+        // find adapter for output
         e._1.name match {
-          case "Force" => controlledCar.engineForce = (e._1.minVal to e._1.maxVal)(logic.defuzzy.func.apply(output)); println(" Force: " + controlledCar.engineForce)
+          case "Force" => controlledCar.engineForce = setpoint; println(" Force: " + setpoint)
         }
       }
     )
