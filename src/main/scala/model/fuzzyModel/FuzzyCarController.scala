@@ -1,18 +1,20 @@
-package service.fuzzyModel
+package model.fuzzyModel
 
-import service.fuzzyModel.core.{FuzzyBool, FuzzyKnowledgeBase}
-import service.physicalModel.Drivable
+import model.fuzzyModel.entity.{FuzzyBool, FuzzyConfig}
+import model.physicalModel.Drivable
 
 import scala.util.Random
 
 /**
   * Created by nico on 12.01.17.
   */
-class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, chasedCar: Drivable) {
+class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar: Drivable) {
 
   var random = new Random(1234)
 
   def tick(): Unit = {
+    controlledCar.tick()
+    chasedCar.tick()
     // measure
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed
@@ -36,22 +38,7 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
       (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
     }
 
-    def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
-      (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
-    }
 
-    def maxMethod: List[Double] => Int = {
-      (list) => Random.shuffle(getMaxValuesWithIndixes.apply(list).map(e => e._2).toList).head
-    }
-
-    def momMethod: List[Double] => Int = {
-      (list) => {
-        var total = getMaxValuesWithIndixes.apply(list)
-        (total.map(e => e._2).foldLeft(0.toDouble) {
-          _ + _
-        } / total.length).toInt
-      }
-    }
 
     // group OutputRules by outputAdapters
     var groupedOutput = outputRules.groupBy(_._2).transform(
