@@ -13,6 +13,8 @@ class App extends Application {
 
   val carFront, carBack = new Car
   val controller = new FuzzyCarController(DefaultConfig, carBack, carFront)
+  carFront.position = 300;
+
   var loader: FXMLLoader = _
 
   override def start(stage: Stage): Unit = {
