@@ -38,22 +38,7 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
       (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
     }
 
-    def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
-      (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
-    }
 
-    def maxMethod: List[Double] => Int = {
-      (list) => Random.shuffle(getMaxValuesWithIndixes.apply(list).map(e => e._2).toList).head
-    }
-
-    def momMethod: List[Double] => Int = {
-      (list) => {
-        var total = getMaxValuesWithIndixes.apply(list)
-        (total.map(e => e._2).foldLeft(0.toDouble) {
-          _ + _
-        } / total.length).toInt
-      }
-    }
 
     // group OutputRules by outputAdapters
     var groupedOutput = outputRules.groupBy(_._2).transform(
