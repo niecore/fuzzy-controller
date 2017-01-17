@@ -5,11 +5,13 @@ import java.util.ResourceBundle
 import javafx.beans.binding.{Bindings, NumberBinding}
 import javafx.beans.property._
 import javafx.beans.value.{ChangeListener, ObservableValue}
+import javafx.event.ActionEvent
 import javafx.fxml.{FXML, FXMLLoader, Initializable}
-import javafx.scene.{Parent, Scene}
-import javafx.scene.control.{Label, Slider, TextField}
+import javafx.scene.chart.{AreaChart, NumberAxis, XYChart}
+import javafx.scene.{Group, Node, Parent, Scene}
+import javafx.scene.control.{Label, Slider, Tab, TextField}
 import javafx.scene.layout.Pane
-import javafx.stage.Stage
+import javafx.stage.{Modality, Stage}
 import javafx.util.converter.NumberStringConverter
 
 import model.fuzzyModel.DefaultConfig
@@ -50,6 +52,12 @@ class MainPresenter extends Initializable {
   @FXML
   var tfDist: Label = _
 
+  @FXML
+  var posChartTab: Tab = _
+
+  @FXML
+  var speedChartTab: Tab = _
+
   var newton1: DoubleProperty = new SimpleDoubleProperty()
   var acc1: DoubleProperty = new SimpleDoubleProperty()
   var speed1: DoubleProperty = new SimpleDoubleProperty()
@@ -61,6 +69,14 @@ class MainPresenter extends Initializable {
   var pos2: DoubleProperty = new SimpleDoubleProperty()
 
   var dist: DoubleProperty = new SimpleDoubleProperty()
+
+
+  var carFrontposition: XYChart.Series[Number, Number] = _
+  var carBackposition: XYChart.Series[Number, Number] = _
+
+
+  var carFrontSpeed: XYChart.Series[Number, Number] = _
+  var carBackSpeed: XYChart.Series[Number, Number] = _
 
   override def initialize(url: URL, resourceBundle: ResourceBundle): Unit = {
     Bindings.bindBidirectional(tfNewton1.textProperty(), newton1, new NumberStringConverter())
@@ -75,15 +91,53 @@ class MainPresenter extends Initializable {
 
     Bindings.bindBidirectional(tfDist.textProperty(), dist, new NumberStringConverter())
 
-    newton2.addListener((o, t, n) => {println(s"new value: $n")})
-
     newton1.bindBidirectional(sliderNewton.valueProperty())
+
+    initSpeedChart
+    initPosChart
+  }
+  def initSpeedChart: Unit ={
+    val xAxisPositionChart  = new NumberAxis()
+    val yAxisPositionChart = new NumberAxis()
+    val speedChart = new AreaChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
+
+    carFrontSpeed = new XYChart.Series[Number, Number]()
+    carBackSpeed = new XYChart.Series[Number, Number]()
+
+    speedChart.getData.addAll(carFrontSpeed, carBackSpeed)
+    speedChartTab.setContent(speedChart)
   }
 
-  def onPlay: Unit = {
+  def initPosChart: Unit ={
+    val xAxisPositionChart  = new NumberAxis()
+    val yAxisPositionChart = new NumberAxis()
+
+    val positionChart = new AreaChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
+    carFrontposition = new XYChart.Series[Number, Number]()
+    carBackposition = new XYChart.Series[Number, Number]()
+
+    positionChart.getData.addAll(carFrontposition, carBackposition)
+    posChartTab.setContent(positionChart)
+  }
+
+  def addnewSpeedToGraph(carFront: Double, carBack: Double, tick: Int): Unit = {
+    carFrontSpeed.getData().add(new XYChart.Data(tick, carFront));
+    carBackSpeed.getData().add(new XYChart.Data(tick, carBack));
+  }
+
+  def addnewPositionsToGraph(carFront: Double, carBack: Double, tick: Int): Unit ={
+    carFrontposition.getData().add(new XYChart.Data(tick, carFront));
+    carBackposition.getData().add(new XYChart.Data(tick, carBack));
+  }
+
+  def onPlay(event: ActionEvent): Unit = {
     val loader = new FXMLLoader(getClass.getResource("../configEditor/configEditor.fxml"))
     val stage = new Stage()
     stage.setScene(new Scene(loader.load()))
+    stage.initModality(Modality.WINDOW_MODAL);
+    stage.initOwner(event.getSource match {
+      case e: Node => e.getScene.getWindow
+    })
     stage.show()
     loader.getController[ConfigEditorPresenter].initData(DefaultConfig, this)
   }

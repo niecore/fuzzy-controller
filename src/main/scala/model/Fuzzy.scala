@@ -11,6 +11,8 @@ import presentation.mainView.MainPresenter
   */
 class Fuzzy(carFront: Car, carBack:Car, controller: FuzzyCarController, mainPresenter: MainPresenter) extends Runnable {
 
+  var tick = 0
+
   override def run(): Unit = {
     while(true){
       carFront.engineForce = mainPresenter.newton1.get()
@@ -25,8 +27,11 @@ class Fuzzy(carFront: Car, carBack:Car, controller: FuzzyCarController, mainPres
         mainPresenter.pos2.set(carBack.position)
 
         mainPresenter.dist.set(carFront.position - carBack.position)
+        mainPresenter.addnewPositionsToGraph(carFront.position, carBack.position, tick)
+        mainPresenter.addnewSpeedToGraph(carFront.speed, carBack.speed, tick)
       })
       controller.tick()
+      tick += 1
       Thread.sleep(100)
     }
   }

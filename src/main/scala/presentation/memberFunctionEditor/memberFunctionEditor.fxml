@@ -6,7 +6,7 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:controller="presentation.memberFunctionEditor.MemberFunctionEditorPresenter" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="680.0" prefWidth="960.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.memberFunctionEditor.MemberFunctionEditorPresenter">
    <top>
       <LineChart BorderPane.alignment="CENTER">
         <xAxis>
@@ -18,23 +18,24 @@
       </LineChart>
    </top>
    <center>
-      <ListView prefHeight="191.0" prefWidth="801.0" BorderPane.alignment="CENTER">
+      <ListView fx:id="termsList" prefHeight="191.0" prefWidth="801.0" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
       </ListView>
    </center>
    <right>
-      <Button mnemonicParsing="false" text="Delete" BorderPane.alignment="CENTER">
+      <Button mnemonicParsing="false" onAction="#deleteMemberFunction" text="Delete" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
       </Button>
    </right>
    <bottom>
-      <HBox alignment="BOTTOM_RIGHT" BorderPane.alignment="CENTER">
+      <HBox spacing="5" alignment="BOTTOM_RIGHT" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Close" />
+            <Button onAction="#onAbort" mnemonicParsing="false" text="Abort" />
+            <Button onAction="#onOk" mnemonicParsing="false" text="OK" />
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
@@ -57,15 +58,15 @@
         </rowConstraints>
          <children>
             <Label text="Name:" />
-            <TextField GridPane.columnIndex="1" />
-            <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField fx:id="tfName" GridPane.columnIndex="1" />
+            <ComboBox fx:id="functionsComboBox" prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
             <Label text="x-Left: " GridPane.rowIndex="2" />
-            <TextField maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField fx:id="tfLeft" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
             <Label text="x-Mid:" GridPane.rowIndex="3" />
-            <TextField maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField fx:id="tfMid" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
             <Label text="x-Right" GridPane.rowIndex="4" />
-            <TextField maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Button mnemonicParsing="false" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField fx:id="tfRight" maxWidth="60.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <Button mnemonicParsing="false" onAction="#addMemberFunction" text="Add" GridPane.columnIndex="1" GridPane.rowIndex="5" />
          </children>
          <BorderPane.margin>
             <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
