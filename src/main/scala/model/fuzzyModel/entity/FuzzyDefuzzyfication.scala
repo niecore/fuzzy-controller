@@ -5,13 +5,12 @@ import scala.util.Random
 /**
   * Created by nico on 17.01.17.
   */
-case class FuzzyDefuzzyfication(val name: String, val func: (List[Double]) => Double) {
 
-}
+case class FuzzyDefuzzyficationFunc(val name: String, val func: (List[Double]) => Int)
 
 object DefuzzyficationFunctions {
 
-  def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
+  private def getMaxValuesWithIndixes: List[Double] => List[(Double, Int)] = {
     (list) => list.zipWithIndex.filter(e=> e._1 == list.max)
   }
 
@@ -27,4 +26,8 @@ object DefuzzyficationFunctions {
       } / total.length).toInt
     }
   }
+
+  var functionList = List(  new FuzzyDefuzzyficationFunc("Mean of Maxima", momMethod),
+                            new FuzzyDefuzzyficationFunc("Maxium criteria", maxMethod)
+  )
 }
