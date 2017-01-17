@@ -65,7 +65,7 @@ class Car extends Drivable{
     position += ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
 
     total += sampleTime
-    println("Acc: " + acceleration + " Speed: " + speed * 3.6 + " Pos: " + position + " SampleTime: " + sampleTime + " Total: " + total)
+    println("Acc: " + BigDecimal(acceleration).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Speed: " + BigDecimal(Physics.speedToKmh(speed)).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Pos: " + BigDecimal(position).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " SampleTime: " + sampleTime + " Total: " + BigDecimal(total).setScale(2,BigDecimal.RoundingMode.HALF_UP))
 
     past = now;
   }

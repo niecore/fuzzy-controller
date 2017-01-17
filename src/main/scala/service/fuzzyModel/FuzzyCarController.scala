@@ -28,7 +28,7 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
           }
         )
         var minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
-        println(rule.name + ": " + minAcceptance)
+        print(rule.name + ": " + minAcceptance + " ")
         ((x: Double) => new FuzzyBool(Math.min(minAcceptance,rule.outputs.func.apply(x).value)), rule.outputs.adapter)
       }
     )
@@ -67,9 +67,8 @@ class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, cha
           f => f.value
         ).toList
 
-        println(output)
         e._1.name match {
-          case "Force" => controlledCar.engineForce = momMethod.apply(output); println(controlledCar.engineForce)
+          case "Force" => controlledCar.engineForce = (e._1.minVal to e._1.maxVal)(momMethod.apply(output)); println(" Force: " + controlledCar.engineForce)
         }
       }
     )

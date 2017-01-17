@@ -17,8 +17,9 @@ object Main extends App {
     if(carFront.speed >= 28)
       carFront.engineForce = 0
     carFront.tick()
-    //carBack.tick()
+    carBack.tick()
     controller.tick()
     Thread.sleep(100)
+    println("----------------------------------------------------------------------")
   }
 }
