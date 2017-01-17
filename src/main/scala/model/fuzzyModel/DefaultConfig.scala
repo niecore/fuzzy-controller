@@ -1,12 +1,12 @@
 package model.fuzzyModel
 
-import model.fuzzyModel.entity.{FuzzyBool, FuzzyRule, FuzzyTerm, FuzzyValueConnector, FuzzyConfig}
+import model.fuzzyModel.entity._
 
 /**
   * Created by nico on 17.01.17.
   */
 
-object DefaultConfig extends FuzzyConfig(RuleBase.fuzzyValueConnector, RuleBase.terms, RuleBase.rules)
+object DefaultConfig extends FuzzyConfig(RuleBase.fuzzyValueConnector, RuleBase.terms, RuleBase.rules, RuleBase.defuzzy)
 
 object RuleBase {
   // Fuzzyfication
@@ -41,4 +41,6 @@ object RuleBase {
     new FuzzyRule("Rule3", List(isNormal), roll),
     new FuzzyRule("Rule4", List(isClose), brake),
     new FuzzyRule("Rule5", List(isVeryClose), fullStop))
+
+  val defuzzy = DefuzzyficationFunctions.functionList.find(p => p.name == "Mean of Maxima")
 }

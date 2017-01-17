@@ -38,8 +38,6 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
       (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
     }
 
-
-
     // group OutputRules by outputAdapters
     var groupedOutput = outputRules.groupBy(_._2).transform(
       (k,v) => v.map( e => e._1)
@@ -55,7 +53,7 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
         ).toList
 
         e._1.name match {
-          case "Force" => controlledCar.engineForce = (e._1.minVal to e._1.maxVal)(momMethod.apply(output)); println(" Force: " + controlledCar.engineForce)
+          case "Force" => controlledCar.engineForce = (e._1.minVal to e._1.maxVal)(logic.defuzzy.func.apply(output)); println(" Force: " + controlledCar.engineForce)
         }
       }
     )
