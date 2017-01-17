@@ -11,8 +11,6 @@ import presentation.mainView.MainPresenter
   */
 class Fuzzy(carFront: Car, carBack:Car, controller: FuzzyCarController, mainPresenter: MainPresenter) extends Runnable {
 
-
-
   override def run(): Unit = {
     while(true){
       carFront.engineForce = mainPresenter.newton1.get()
