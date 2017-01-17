@@ -1,4 +1,4 @@
-package service.fuzzyModel.core
+package model.fuzzyModel.entity
 
 /**
   * Created by nico on 16.01.17.

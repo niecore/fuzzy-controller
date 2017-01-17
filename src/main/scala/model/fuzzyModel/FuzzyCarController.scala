@@ -1,18 +1,20 @@
-package service.fuzzyModel
+package model.fuzzyModel
 
-import service.fuzzyModel.core.{FuzzyBool, FuzzyKnowledgeBase}
-import service.physicalModel.Drivable
+import model.fuzzyModel.entity.{FuzzyBool, FuzzyConfig}
+import model.physicalModel.Drivable
 
 import scala.util.Random
 
 /**
   * Created by nico on 12.01.17.
   */
-class FuzzyCarController(logic: FuzzyKnowledgeBase, controlledCar: Drivable, chasedCar: Drivable) {
+class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar: Drivable) {
 
   var random = new Random(1234)
 
   def tick(): Unit = {
+    controlledCar.tick()
+    chasedCar.tick()
     // measure
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed

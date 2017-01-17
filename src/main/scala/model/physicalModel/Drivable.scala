@@ -1,4 +1,4 @@
-package service.physicalModel
+package model.physicalModel
 
 /**
   * Created by nico on 12.01.17.
