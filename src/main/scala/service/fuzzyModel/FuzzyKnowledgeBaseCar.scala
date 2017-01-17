@@ -1,68 +1,39 @@
 package service.fuzzyModel
 
-import service.fuzzyModel.core.{FuzzyBool, FuzzyKnowledgeBase, FuzzyRule}
+import service.fuzzyModel.core._
 
 /**
   * Created by nico on 15.01.17.
   */
 object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
   // Fuzzyfication
-  // Einheit; Meter
-  // Wertebeich: 0-55
-  def isVeryClose(distance: Double): FuzzyBool = {
-    var value = new FuzzyBool(triangle(distance, None, 10, Some(20)))
-    //println("isVeryClose " + value.value)
-    value
-  }
+  val distanceInput = new FuzzyValueConnector("Distance", 0, 1000)
+  val speedInput    = new FuzzyValueConnector("Speed", 0, 250)
 
-  def isClose(distance: Double): FuzzyBool = {
-    var value = new FuzzyBool(triangle(distance, Some(15), 25, Some(35)))
-    //println("isClose: " + value.value)
-    value
-  }
+  val isVeryClose = new FuzzyTerm("isVeryClose", distanceInput, (x) => new FuzzyBool(triangle(x, None, 30, Some(60))))
+  val isClose     = new FuzzyTerm("isClose", distanceInput, (x) => new FuzzyBool(triangle(x, Some(30), 60, Some(90))))
+  val isNormal    = new FuzzyTerm("isNormal", distanceInput, (x) => new FuzzyBool(triangle(x, Some(60), 90, Some(120))))
+  val isFar       = new FuzzyTerm("isFar", distanceInput, (x) => new FuzzyBool(triangle(x, Some(90), 120, Some(150))))
+  val isVeryFar   = new FuzzyTerm("isVeryFar", distanceInput, (x) => new FuzzyBool(triangle(x, Some(120), 150, None)))
 
-  def isNormal(distance: Double): FuzzyBool = {
-    var value = new FuzzyBool(triangle(distance, Some(25), 35, Some(45)))
-    //println("isNormal " + value.value)
-    value
-  }
-
-  def isFar(distance: Double): FuzzyBool = {
-    var value = new FuzzyBool(triangle(distance, Some(35), 45, Some(55)))
-    //println("isFar " + value.value)
-    value
-  }
-
-  def isVeryFar(distance: Double): FuzzyBool = {
-    var value = new FuzzyBool(triangle(distance, Some(45), 55, None))
-    //println("isVeryFar " + value.value)
-    value
-  }
+  val isSlow      = new FuzzyTerm("isVeryClose", speedInput, (x) => new FuzzyBool(triangle(x, None, 50, Some(100))))
+  val isFast      = new FuzzyTerm("isNormal", speedInput, (x) => new FuzzyBool(triangle(x, Some(50), 100, Some(150))))
+  val isExtreme   = new FuzzyTerm("isVeryFar", speedInput, (x) => new FuzzyBool(triangle(x, Some(100), 150, None)))
 
   // Defuzzyfication
-  // Einheit: m/s^2
-  // Wertbereich: [-1...1]
-  def brake(alpha: Double): Double => FuzzyBool = {
-    //println("Break: " + alpha)
-    return (x: Double) => new FuzzyBool(triangle(x, Some(-1000), -500, Some(0)))
-  }
+  val forceOutput = new FuzzyValueConnector("Force", -3000, 7000)
 
-  def roll(alpha: Double): Double => FuzzyBool = {
-    //println("Roll: " + alpha)
-    return (x: Double) => new FuzzyBool(triangle(x, Some(-500), 0, Some(500)))
-  }
-
-  def speed(alpha: Double): Double => FuzzyBool = {
-    //println("Speed: " + alpha)
-    return (x: Double) => new FuzzyBool(triangle(x, Some(0), 2000, Some(5000)))
-  }
-
+  val fullStop    = new FuzzyTerm("fullStop", forceOutput, (x) => new FuzzyBool(triangle(x, None, -2000, Some(-1500))))
+  val brake       = new FuzzyTerm("brake", forceOutput, (x) => new FuzzyBool(triangle(x, Some(-2000), -500, Some(0))))
+  val roll        = new FuzzyTerm("roll", forceOutput, (x) => new FuzzyBool(triangle(x, Some(-500), 0, Some(500))))
+  val speed       = new FuzzyTerm("speed", forceOutput, (x) => new FuzzyBool(triangle(x, Some(0), 500, Some(1000))))
+  val fullSpeed   = new FuzzyTerm("fullSpeed", forceOutput, (x) => new FuzzyBool(triangle(x, Some(500), 2000, None)))
   // Rules
-  var rules = List[FuzzyRule](  new FuzzyRule("Rule1", List(isVeryFar), speed),
+  var rules = List[FuzzyRule](  new FuzzyRule("Rule1", List(isVeryFar), fullSpeed),
                                 new FuzzyRule("Rule2", List(isFar), speed),
                                 new FuzzyRule("Rule3", List(isNormal), roll),
                                 new FuzzyRule("Rule4", List(isClose), brake),
-                                new FuzzyRule("Rule5", List(isVeryClose), brake))
+                                new FuzzyRule("Rule5", List(isVeryClose), fullStop))
 
   def triangle(x: Double, a: Option[Double], m: Double, b: Option[Double]): Double = {
     // source:

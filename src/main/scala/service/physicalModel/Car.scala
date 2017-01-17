@@ -10,13 +10,17 @@ object Physics{
   val friction = 0.05
   // m/s^2
   val gravity = 9.81
+
+  def speedToKmh(ms:Double): Double = {
+    ms * 3.6
+  }
 }
 
 class Car extends Drivable{
   private var past: Long = System.currentTimeMillis()
 
   // kg
-  val mass: Double = 1140
+  val mass: Double = 1540.0
   // no dimension
   val windDragCoefficient: Double = 0.37
   // m^2
@@ -30,6 +34,8 @@ class Car extends Drivable{
   var position: Double = 0
   // N = kg * m / s^2
   var engineForce: Double = 0;
+
+  var total: Double = 0;
 
   def tick(): Unit = {
     val now = System.currentTimeMillis()
@@ -56,9 +62,10 @@ class Car extends Drivable{
       speed = 0;
     }
 
-    position += ((0.5 * acceleration * sampleTime * sampleTime) + speed)
+    position += ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
 
-    println("Acc: " + acceleration + " Speed: " + speed + " Pos: " + position + " SampleTime: " + sampleTime)
+    total += sampleTime
+    println("Acc: " + BigDecimal(acceleration).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Speed: " + BigDecimal(Physics.speedToKmh(speed)).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Pos: " + BigDecimal(position).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " SampleTime: " + sampleTime + " Total: " + BigDecimal(total).setScale(2,BigDecimal.RoundingMode.HALF_UP))
 
     past = now;
   }

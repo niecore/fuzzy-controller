@@ -8,4 +8,5 @@ trait Drivable {
   var acceleration: Double
   var speed: Double
   var position: Double
+  var engineForce: Double
 }

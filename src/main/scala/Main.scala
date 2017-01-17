@@ -11,14 +11,15 @@ object Main extends App {
   val carFront, carBack = new Car
   val controller = new FuzzyCarController(FuzzyKnowledgeBaseCar, carBack, carFront)
 
-  carFront.engineForce = 8000;
+  carFront.engineForce = 6000;
 
   while(true){
-    if(carFront.speed >= 5)
+    if(carFront.speed >= 28)
       carFront.engineForce = 0
     carFront.tick()
-    //carBack.tick()
+    carBack.tick()
     controller.tick()
     Thread.sleep(100)
+    println("----------------------------------------------------------------------")
   }
 }
