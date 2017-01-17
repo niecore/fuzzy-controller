@@ -7,8 +7,9 @@ import service.fuzzyModel.core._
   */
 object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
   // Fuzzyfication
-  val distanceInput = new FuzzyValueConnector("Distance", 0, 1000)
-  val speedInput    = new FuzzyValueConnector("Speed", 0, 250)
+  val distanceInput = new FuzzyValueConnector("Distance", 0, 1000, true)
+  val speedInput    = new FuzzyValueConnector("Speed", 0, 250, true)
+  val forceOutput   = new FuzzyValueConnector("Force", -3000, 7000, false)
 
   val isVeryClose = new FuzzyTerm("isVeryClose", distanceInput, (x) => new FuzzyBool(triangle(x, None, 30, Some(60))))
   val isClose     = new FuzzyTerm("isClose", distanceInput, (x) => new FuzzyBool(triangle(x, Some(30), 60, Some(90))))
@@ -21,15 +22,21 @@ object FuzzyKnowledgeBaseCar extends FuzzyKnowledgeBase {
   val isExtreme   = new FuzzyTerm("isVeryFar", speedInput, (x) => new FuzzyBool(triangle(x, Some(100), 150, None)))
 
   // Defuzzyfication
-  val forceOutput = new FuzzyValueConnector("Force", -3000, 7000)
-
   val fullStop    = new FuzzyTerm("fullStop", forceOutput, (x) => new FuzzyBool(triangle(x, None, -2000, Some(-1500))))
   val brake       = new FuzzyTerm("brake", forceOutput, (x) => new FuzzyBool(triangle(x, Some(-2000), -500, Some(0))))
   val roll        = new FuzzyTerm("roll", forceOutput, (x) => new FuzzyBool(triangle(x, Some(-500), 0, Some(500))))
   val speed       = new FuzzyTerm("speed", forceOutput, (x) => new FuzzyBool(triangle(x, Some(0), 500, Some(1000))))
   val fullSpeed   = new FuzzyTerm("fullSpeed", forceOutput, (x) => new FuzzyBool(triangle(x, Some(500), 2000, None)))
+
+  val terms      = scala.collection.mutable.ArrayBuffer.empty[FuzzyTerm];
+  terms.+=(isVeryClose, isClose, isNormal, isFar, isVeryFar, isSlow, isFast, isExtreme, fullStop, brake, roll, speed, fullSpeed);
+
+  var distanceTerms = terms.filter( e => e.adapter == distanceInput)
+  var speedTerms = terms.filter(e => e.adapter == speedInput)
+  var forceTerms = terms.filter(e => e.adapter == forceOutput)
+
   // Rules
-  var rules = List[FuzzyRule](  new FuzzyRule("Rule1", List(isVeryFar), fullSpeed),
+  val rules = List[FuzzyRule](  new FuzzyRule("Rule1", List(isVeryFar), fullSpeed),
                                 new FuzzyRule("Rule2", List(isFar), speed),
                                 new FuzzyRule("Rule3", List(isNormal), roll),
                                 new FuzzyRule("Rule4", List(isClose), brake),
