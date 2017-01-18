@@ -2,14 +2,20 @@ package model
 
 import javafx.application.Platform
 
-import model.fuzzyModel.FuzzyCarController
+import model.fuzzyModel.entity.FuzzyConfig
+import model.fuzzyModel.{DefaultConfig, FuzzyCarController}
 import model.physicalModel.Car
 import presentation.mainView.MainPresenter
 
 /**
   * Created by joel on 17.01.17.
   */
-class Fuzzy(carFront: Car, carBack:Car, controller: FuzzyCarController, mainPresenter: MainPresenter) extends Runnable {
+class Fuzzy(config: FuzzyConfig) extends Runnable {
+
+  val carFront, carBack = new Car
+  val controller = new FuzzyCarController(config, carBack, carFront)
+  carFront.position = 300;
+  val mainPresenter = BackgroundThread.mainPresenter
 
   var tick = 0
 
@@ -35,4 +41,18 @@ class Fuzzy(carFront: Car, carBack:Car, controller: FuzzyCarController, mainPres
       Thread.sleep(100)
     }
   }
+}
+
+object BackgroundThread{
+  def startNewThread(config: FuzzyConfig): Unit ={
+    if(fuzzyThread == null || fuzzyThread.isAlive == false){
+      println("jo neuer thread")
+      mainPresenter.resetCharts
+      fuzzyThread = new Thread(new Fuzzy(config))
+      fuzzyThread start
+    }
+  }
+
+  var fuzzyThread: Thread = _
+  var mainPresenter: MainPresenter = _
 }

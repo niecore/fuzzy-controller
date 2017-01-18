@@ -10,6 +10,6 @@ case class FuzzyConfig(var fuzzyValueConnectors : List[FuzzyValueConnector],
                        var rules: List[FuzzyRule],
                        var defuzzy: FuzzyDefuzzyficationFunc) {
   def filterFuzzyTerms(x: FuzzyValueConnector): List[FuzzyTerm] = {
-    fuzzyTerms.filter(e => e.adapter == x)
+    fuzzyTerms.filter(e => e.adapter.name == x.name)
   }
 }

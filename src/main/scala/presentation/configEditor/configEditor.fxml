@@ -36,9 +36,9 @@
    <bottom>
       <HBox spacing="5.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" text="Edit rules" />
+            <Button onAction="#openRuleEditor" mnemonicParsing="false" text="Edit rules" />
             <Pane HBox.hgrow="ALWAYS" />
-            <Button mnemonicParsing="false" text="Abort" />
+            <Button onAction="#abort" mnemonicParsing="false" text="Abort" />
             <Button onAction="#go" mnemonicParsing="false" text="Go" />
          </children>
          <padding>

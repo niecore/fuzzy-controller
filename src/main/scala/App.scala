@@ -1,19 +1,15 @@
 import javafx.application.Application
 import javafx.fxml.FXMLLoader
 import javafx.geometry.Rectangle2D
-import javafx.scene.{Parent, Scene}
+import javafx.scene.Scene
 import javafx.stage.{Screen, Stage}
 
-import model.Fuzzy
 import model.fuzzyModel.{DefaultConfig, FuzzyCarController}
 import model.physicalModel.Car
+import model.{BackgroundThread, Fuzzy}
 import presentation.mainView.MainPresenter
 
 class App extends Application {
-
-  val carFront, carBack = new Car
-  val controller = new FuzzyCarController(DefaultConfig, carBack, carFront)
-  carFront.position = 300;
 
   var loader: FXMLLoader = _
 
@@ -32,17 +28,15 @@ class App extends Application {
     stage.setScene(scene)
     stage.show()
 
-    App.fuzzyThread = new Thread(new Fuzzy(carFront, carBack, controller, loader.getController[MainPresenter]))
-    App.fuzzyThread.start
+    BackgroundThread.mainPresenter = loader.getController[MainPresenter]
   }
 }
 
 object App{
 
-  var fuzzyThread: Thread = _
-
   def main(args: Array[String]) {
     Application.launch(classOf[App], args: _*)
-    fuzzyThread.interrupt()
+    BackgroundThread.fuzzyThread.interrupt()
   }
 }
+

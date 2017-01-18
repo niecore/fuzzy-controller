@@ -41,6 +41,7 @@ class MemberFunctionEditorPresenter extends Initializable{
 
   def initData(cfg: FuzzyConfig, fvc: FuzzyValueConnector) = {
     config = cfg
+    println("size of " + fvc.name + " " + config.filterFuzzyTerms(fvc).size)
     config.filterFuzzyTerms(fvc).foreach(ft => termsList.getItems.add(ft))
     valueConnector = fvc
   }

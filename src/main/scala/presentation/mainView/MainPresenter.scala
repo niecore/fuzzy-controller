@@ -14,7 +14,9 @@ import javafx.scene.layout.Pane
 import javafx.stage.{Modality, Stage}
 import javafx.util.converter.NumberStringConverter
 
+import model.BackgroundThread
 import model.fuzzyModel.DefaultConfig
+import model.fuzzyModel.entity.FuzzyConfig
 import presentation.configEditor.ConfigEditorPresenter
 
 /**
@@ -140,5 +142,16 @@ class MainPresenter extends Initializable {
     })
     stage.show()
     loader.getController[ConfigEditorPresenter].initData(DefaultConfig, this)
+  }
+
+  def resetCharts = {
+    carFrontSpeed.getData.clear
+    carBackSpeed.getData.clear
+    carFrontposition.getData.clear
+    carBackposition.getData.clear
+  }
+
+  def onReset(event: ActionEvent): Unit ={
+    BackgroundThread.fuzzyThread.interrupt()
   }
 }
