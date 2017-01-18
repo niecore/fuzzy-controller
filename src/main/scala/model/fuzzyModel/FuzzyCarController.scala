@@ -8,13 +8,19 @@ import model.physicalModel.Drivable
   */
 class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar: Drivable) {
 
+  def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool]): ((Double) => FuzzyBool) = {
+    (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
+  }
+
   def tick(): Unit = {
     controlledCar.tick()
     chasedCar.tick()
-    // measure
+
+
+    // Measure Input Values
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed
-
+    
     val outputRules = logic.rules.map(
       rule => {
         val acceptance = rule.inputs.map(
@@ -25,14 +31,11 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
             }
           }
         )
+
         val minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
-        println(rule.name + ": " + minAcceptance + " ")
         ((x: Double) => new FuzzyBool(Math.min(minAcceptance,rule.outputs.func.apply(x).value)), rule.outputs.adapter)
       }
     )
-    def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool]): ((Double) => FuzzyBool) = {
-      (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
-    }
 
     // group OutputRules by outputAdapters
     var groupedOutput = outputRules.groupBy(_._2).transform(

@@ -36,7 +36,7 @@ object RuleBase {
   val medSpeed = new FuzzyTerm("medSpeed", forceOutput,   (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(1000), 2000, Some(3000))))
   val fullSpeed = new FuzzyTerm("fullSpeed", forceOutput, (x) => new FuzzyBool(MembershipFunctions.triangle(x, Some(2000), 3000, None)))
 
-  val terms =  isFixed :: isVeryClose :: isClose :: isNormal :: isFar :: isVeryFar :: isSlow :: isFast :: isExtreme :: fullBrake :: brake :: roll :: speed :: fullSpeed :: Nil
+  val terms =  medSpeed :: medBrake :: isVeryClose :: isClose :: isNormal :: isFar :: isVeryFar :: isSlow :: isFast :: isExtreme :: fullBrake :: brake :: roll :: speed :: fullSpeed :: Nil
 
   // Rules
   val rules = List[FuzzyRule](

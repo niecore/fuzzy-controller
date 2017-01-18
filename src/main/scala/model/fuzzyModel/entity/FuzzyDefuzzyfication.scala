@@ -6,7 +6,8 @@ import scala.util.Random
   * Created by nico on 17.01.17.
   */
 
-case class FuzzyDefuzzyficationFunc(val name: String, val func: (List[Double]) => Int)
+case class FuzzyDefuzzyficationFunc(val name: String,
+                                    val func: (List[Double]) => Int)
 
 object DefuzzyficationFunctions {
 

@@ -3,7 +3,9 @@ package model.fuzzyModel.entity
 /**
   * Created by nico on 15.01.17.
   */
-class FuzzyRule(val name: String, val inputs: List[FuzzyTerm], val outputs: FuzzyTerm) {
+class FuzzyRule(val name: String,
+                val inputs: List[FuzzyTerm],
+                val outputs: FuzzyTerm) {
 
   override def toString = {
     var s: StringBuilder = new StringBuilder

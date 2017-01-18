@@ -39,64 +39,42 @@ class Car extends Drivable{
   // s
   var totalTime: Double = 0;
 
-  def reset(): Unit = {
-    acceleration = 0;
-    speed = 0;
-    speedKmh = 0;
-    engineForce = 0;
-    totalTime = 0;
-    paused = false;
-    past = System.currentTimeMillis()
-  }
-
-  def pause(): Unit = {
-    paused = true;
-  }
-
-  def resume(): Unit = {
-    past = System.currentTimeMillis()
-    paused = false;
-  }
-
   def tick(): Unit = {
-    if(paused) {
-      return
-    }
-
     val now = System.currentTimeMillis()
     val sampleTime: Double = (now - past) / 1000.0
 
     // F = a * m
-    var force = 0.0;
-    // Fahrwiederstand = Luftwiederstand + Rollwiederstand + Steigungswiederstand + Beschleunigungswiederstand
+    var antiForce = 0.0;
     // Luftwiederstand
-    force += ((Physics.airDensity / 2) * crossSectionalArea * windDragCoefficient * speed * speed)
+    antiForce += ((Physics.airDensity / 2) * crossSectionalArea * windDragCoefficient * speed * speed)
     // Rollwiederstand
     if(speed > 0) {
-      force += (mass * Physics.friction * Physics.gravity)
+      antiForce += (mass * Physics.friction * Physics.gravity)
     }
     // Steigungswiederstand
-    force += (mass * Physics.gravity * Math.sin(0))
-    // Beschleunigungswiederstandi
-    //force += (mass * acceleration)
+    antiForce += (mass * Physics.gravity * Math.sin(0))
 
-    acceleration = (engineForce - force) / mass
+    // Reducuce AntiForce from EngineForce
+    // Get actual acceleration
+    acceleration = (engineForce - antiForce) / mass
+
+    // Calculate Speed
     speed += (acceleration * sampleTime)
 
+    // Restrict negative speed
     if(speed < 0) {
       speed = 0;
     }
 
-    speedKmh = Physics.speedToKmh(speed);
-
+    // Calculat new Posistion
     var posDelta = ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
     if(posDelta >= 0) {
       position += posDelta
     }
 
-    totalTime += sampleTime
-    println("Acc: " + BigDecimal(acceleration).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Speed: " + BigDecimal(Physics.speedToKmh(speed)).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " Pos: " + BigDecimal(position).setScale(2, BigDecimal.RoundingMode.HALF_UP) + " SampleTime: " + sampleTime + " Total: " + BigDecimal(totalTime).setScale(2,BigDecimal.RoundingMode.HALF_UP))
-
+    // Update last timestamp
     past = now;
+
+    speedKmh = Physics.speedToKmh(speed);
   }
 }
