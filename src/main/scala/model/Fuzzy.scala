@@ -45,7 +45,6 @@ class Fuzzy(config: FuzzyConfig) extends Runnable {
 object BackgroundThread{
   def startNewThread(config: FuzzyConfig): Unit ={
     if(fuzzyThread == null || fuzzyThread.isAlive == false){
-      println("jo neuer thread")
       mainPresenter.resetCharts
       fuzzyThread = new Thread(new Fuzzy(config))
       fuzzyThread start

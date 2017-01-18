@@ -3,13 +3,13 @@ package presentation.configEditor
 import java.net.URL
 import java.util.ResourceBundle
 import javafx.event.ActionEvent
-import javafx.fxml.{FXMLLoader, Initializable}
-import javafx.scene.control.Button
+import javafx.fxml.{FXML, FXMLLoader, Initializable}
+import javafx.scene.control.{Button, ComboBox}
 import javafx.scene.{Node, Scene}
 import javafx.stage.{Modality, Stage}
 
 import model.{BackgroundThread, Fuzzy}
-import model.fuzzyModel.entity.{FuzzyConfig, FuzzyValueConnector}
+import model.fuzzyModel.entity.{DefuzzyficationFunctions, FuzzyConfig, FuzzyValueConnector}
 import presentation.mainView.MainPresenter
 import presentation.memberFunctionEditor.MemberFunctionEditorPresenter
 import presentation.ruleEditor.RuleEditorPresenter
@@ -20,6 +20,9 @@ import presentation.ruleEditor.RuleEditorPresenter
 class ConfigEditorPresenter extends Initializable{
   var config: FuzzyConfig = _
   var mainPresenter: MainPresenter = _
+
+  @FXML
+  var defuzzyAlgo: ComboBox[String] = _
 
   val distanceInput = new FuzzyValueConnector("Distance", 0, 500, true)
   val speedInput = new FuzzyValueConnector("Speed", 0, 250, true)
@@ -32,6 +35,8 @@ class ConfigEditorPresenter extends Initializable{
   def initData(cfg: FuzzyConfig, mp: MainPresenter): Unit ={
     config = cfg
     mainPresenter = mp
+    DefuzzyficationFunctions.functionList.foreach(dfa => defuzzyAlgo.getItems.add(dfa.name))
+    defuzzyAlgo.getSelectionModel.select(config.defuzzy.name)
   }
 
   def openMfEditor(event: ActionEvent, valueConnector: FuzzyValueConnector): Unit ={
@@ -46,7 +51,7 @@ class ConfigEditorPresenter extends Initializable{
     })
     val controller = loader.getController[MemberFunctionEditorPresenter]
     controller.initData(config, valueConnector)
-    println(s"before: $config")
+
     stage.setTitle(valueConnector.name)
     stage.showAndWait()
     config = controller.config
@@ -71,6 +76,10 @@ class ConfigEditorPresenter extends Initializable{
 
   def go(event: ActionEvent): Unit = {
     close(event)
+    config.defuzzy = DefuzzyficationFunctions.functionList.find({
+      p => p.name == defuzzyAlgo.getSelectionModel.getSelectedItem
+    }).get
+    println(s"after: $config")
     BackgroundThread.startNewThread(config)
   }
   def abort(event: ActionEvent): Unit = {
@@ -89,7 +98,7 @@ class ConfigEditorPresenter extends Initializable{
     })
     val ruleEditorPresenter = loader.getController[RuleEditorPresenter]
     ruleEditorPresenter.initData(config)
-    println(s"before: $config")
+
     stage.showAndWait()
     config = ruleEditorPresenter.config
     println(s"after: $config")
