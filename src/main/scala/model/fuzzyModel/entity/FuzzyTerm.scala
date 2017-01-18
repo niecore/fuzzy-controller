@@ -5,4 +5,5 @@ package model.fuzzyModel.entity
   */
 case class FuzzyTerm (val name: String, val adapter: FuzzyValueConnector, val func: Double => FuzzyBool) {
 
+  override def toString = "" + adapter.name + " = " + name
 }

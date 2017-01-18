@@ -40,9 +40,6 @@ object RuleBase {
 
   // Rules
   val rules = List[FuzzyRule](
-    //new FuzzyRule("isVeryFar, isFixed", List(isVeryFar, isSlow), fullSpeed),
-    //new FuzzyRule("isVeryFar, isFixed", List(isVeryFar, isFast), fullSpeed),
-    new FuzzyRule("isClose, isFixed", List(isClose, isFixed), fullSpeed),
 
     new FuzzyRule("isVeryFar, isSlow", List(isVeryFar, isSlow), fullSpeed),
     new FuzzyRule("isVeryFar, isFast", List(isVeryFar, isFast), fullSpeed),
