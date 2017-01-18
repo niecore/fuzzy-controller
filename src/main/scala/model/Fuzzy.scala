@@ -22,6 +22,7 @@ class Fuzzy(config: FuzzyConfig) extends Runnable {
   override def run(): Unit = {
     while(true){
       carFront.engineForce = mainPresenter.newton1.get()
+      controller.tick()
       Platform.runLater(() => {
         mainPresenter.acc1.set(carFront.acceleration)
         mainPresenter.speed1.set(carFront.speedKmh)
@@ -34,8 +35,10 @@ class Fuzzy(config: FuzzyConfig) extends Runnable {
 
         mainPresenter.dist.set(carFront.position - carBack.position)
         mainPresenter.addDataToGraph(carFront, carBack, tick)
+        if(tick % 10 ==0){
+          mainPresenter.plotDefuzzy(controller.outputFunc)
+        }
       })
-      controller.tick()
       tick += 1
       Thread.sleep(100)
     }

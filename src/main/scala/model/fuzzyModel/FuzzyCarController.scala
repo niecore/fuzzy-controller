@@ -12,6 +12,8 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
     (x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
   }
 
+  var outputFunc: (Double) => FuzzyBool = _
+
   def tick(): Unit = {
     controlledCar.tick()
     chasedCar.tick()
@@ -45,11 +47,14 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
     // calculate output rules
     groupedOutput.foreach(
       (e)=> {
-        var output = (e._1.minVal to e._1.maxVal).map(
-          x => combineOutputRules(e._2)(x.toDouble)
+        val output = (e._1.minVal to e._1.maxVal).map({
+          outputFunc = combineOutputRules(e._2)
+          x => combineOutputRules(e._2)(x.toDouble)}
         ).map(
           f => f.value
         ).toList
+
+
 
         // defuzzyfication
         var setpoint = (e._1.minVal to e._1.maxVal)(logic.defuzzy.func.apply(output))

@@ -15,7 +15,7 @@
    <center>
       <SplitPane dividerPositions="0.7181008902077152" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
          <items>
-            <SplitPane dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0">
+            <SplitPane fx:id="split" dividerPositions="0.5" prefHeight="200.0" prefWidth="200.0">
                <items>
                   <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE">
                     <tabs>
@@ -37,14 +37,7 @@
                         </Tab>
                     </tabs>
                   </TabPane>
-                  <AreaChart>
-                    <xAxis>
-                      <CategoryAxis side="BOTTOM" />
-                    </xAxis>
-                    <yAxis>
-                      <NumberAxis side="LEFT" />
-                    </yAxis>
-                  </AreaChart>
+
                </items>
             </SplitPane>
             <HBox>

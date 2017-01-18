@@ -7,16 +7,16 @@ import javafx.beans.property._
 import javafx.beans.value.{ChangeListener, ObservableValue}
 import javafx.event.ActionEvent
 import javafx.fxml.{FXML, FXMLLoader, Initializable}
-import javafx.scene.chart.{AreaChart, NumberAxis, XYChart}
+import javafx.scene.chart.{AreaChart, LineChart, NumberAxis, XYChart}
 import javafx.scene.{Group, Node, Parent, Scene}
-import javafx.scene.control.{Label, Slider, Tab, TextField}
+import javafx.scene.control._
 import javafx.scene.layout.Pane
 import javafx.stage.{Modality, Stage}
 import javafx.util.converter.NumberStringConverter
 
 import model.BackgroundThread
 import model.fuzzyModel.DefaultConfig
-import model.fuzzyModel.entity.FuzzyConfig
+import model.fuzzyModel.entity.{Fuzzy, FuzzyBool, FuzzyConfig, FuzzyValueConnector}
 import model.physicalModel.Car
 import presentation.configEditor.ConfigEditorPresenter
 
@@ -24,6 +24,9 @@ import presentation.configEditor.ConfigEditorPresenter
   * Created by joel on 13.01.17.
   */
 class MainPresenter extends Initializable {
+
+  val forceOutput = new FuzzyValueConnector("Force", -8000, 4000, false)
+  var plot: LineChart[Number, Number] = _
 
   @FXML
   var sliderNewton: Slider = _
@@ -66,6 +69,9 @@ class MainPresenter extends Initializable {
 
   @FXML
   var accChartTab: Tab = _
+
+  @FXML
+  var split: SplitPane = _
 
   var newton1: DoubleProperty = new SimpleDoubleProperty()
   var acc1: DoubleProperty = new SimpleDoubleProperty()
@@ -111,6 +117,8 @@ class MainPresenter extends Initializable {
     initPosChart
     initForceChart
     initAccChart
+
+    initDefuzzyChart
   }
   def initSpeedChart: Unit ={
     val xAxisPositionChart  = new NumberAxis()
@@ -195,6 +203,39 @@ class MainPresenter extends Initializable {
     carBackForce.getData.clear
     carFrontAcc.getData.clear
     carBackAcc.getData.clear
+  }
+
+  val tickUnit = (min:Int, max:Int, maxTicks: Int) => (Math.abs(min - max) / maxTicks).toInt match {
+    case x if x == 0 => 1
+    case x => x
+  }
+
+  def plotDefuzzy(func: ((Double) => FuzzyBool)): Unit ={
+    plot.getData.clear()
+    var dataSeries = new XYChart.Series[Number, Number]()
+
+    for(x <- (forceOutput.minVal to forceOutput.maxVal by tickUnit(forceOutput.minVal, forceOutput.maxVal, 500)))
+      dataSeries.getData().add(new XYChart.Data(x, func(x).value))
+    plot.getData.add(dataSeries)
+
+  }
+
+  def initDefuzzyChart: Unit ={
+    val xAxisPositionChart  = new NumberAxis()
+    xAxisPositionChart.setLowerBound(forceOutput.minVal)
+    xAxisPositionChart.setUpperBound(forceOutput.maxVal)
+    xAxisPositionChart.setTickUnit(tickUnit(forceOutput.minVal, forceOutput.maxVal, 50))
+    xAxisPositionChart.setAutoRanging(false)
+
+    val yAxisPositionChart = new NumberAxis()
+    yAxisPositionChart.setLowerBound(Fuzzy.MIN_VALUE)
+    yAxisPositionChart.setUpperBound(Fuzzy.MAX_VALUE)
+    yAxisPositionChart.setAutoRanging(false)
+
+    plot = new LineChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
+    plot.setAnimated(false)
+
+    split.getItems.add(plot)
   }
 
   def onReset(event: ActionEvent): Unit ={
