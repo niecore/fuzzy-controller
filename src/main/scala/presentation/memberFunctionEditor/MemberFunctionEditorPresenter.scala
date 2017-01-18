@@ -5,10 +5,12 @@ import java.util.ResourceBundle
 import javafx.event.ActionEvent
 import javafx.fxml.{FXML, Initializable}
 import javafx.scene.Node
+import javafx.scene.chart.{AreaChart, LineChart, NumberAxis, XYChart}
 import javafx.scene.control.{ComboBox, ListView, TextField}
+import javafx.scene.layout.BorderPane
 
 import model.fuzzyModel.MembershipFunctions
-import model.fuzzyModel.entity.{FuzzyBool, FuzzyConfig, FuzzyTerm, FuzzyValueConnector}
+import model.fuzzyModel.entity._
 
 import scala.util.Try
 
@@ -19,9 +21,13 @@ class MemberFunctionEditorPresenter extends Initializable{
 
   var config: FuzzyConfig = _
   var valueConnector: FuzzyValueConnector = _
+  var plot: LineChart[Number, Number] = _
 
   @FXML
   var termsList: ListView[FuzzyTerm] = _
+
+  @FXML
+  var rootPane: BorderPane = _
 
   @FXML
   var tfName: TextField = _
@@ -37,6 +43,12 @@ class MemberFunctionEditorPresenter extends Initializable{
 
   override def initialize(url: URL, resourceBundle: ResourceBundle): Unit = {
     functionsComboBox.getItems.add("Triangle")
+
+  }
+
+  val tickUnit = (min:Int, max:Int, maxTicks: Int) => (Math.abs(min - max) / maxTicks).toInt match {
+    case x if x == 0 => 1
+    case x => x
   }
 
   def initData(cfg: FuzzyConfig, fvc: FuzzyValueConnector) = {
@@ -44,6 +56,38 @@ class MemberFunctionEditorPresenter extends Initializable{
     println("size of " + fvc.name + " " + config.filterFuzzyTerms(fvc).size)
     config.filterFuzzyTerms(fvc).foreach(ft => termsList.getItems.add(ft))
     valueConnector = fvc
+    initSpeedChart
+    val term = new FuzzyTerm("isVeryClose", valueConnector, (x) => new FuzzyBool(MembershipFunctions.triangle(x, None, 100, Some(200))))
+    termsList.getSelectionModel.selectedItemProperty().addListener((o, ol, n) => {
+      plotMemberFunction(n)
+    })
+  }
+
+  def initSpeedChart: Unit ={
+    val xAxisPositionChart  = new NumberAxis()
+    xAxisPositionChart.setLowerBound(valueConnector.minVal)
+    xAxisPositionChart.setUpperBound(valueConnector.maxVal)
+    xAxisPositionChart.setTickUnit(tickUnit(valueConnector.minVal, valueConnector.maxVal, 50))
+    xAxisPositionChart.setAutoRanging(false)
+
+    val yAxisPositionChart = new NumberAxis()
+    yAxisPositionChart.setLowerBound(Fuzzy.MIN_VALUE)
+    yAxisPositionChart.setUpperBound(Fuzzy.MAX_VALUE)
+    yAxisPositionChart.setAutoRanging(false)
+
+    plot = new LineChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
+
+    rootPane.setTop(plot)
+  }
+
+  def plotMemberFunction(fuzzyTerm: FuzzyTerm): Unit ={
+    plot.getData.clear()
+    var dataSeries = new XYChart.Series[Number, Number]()
+
+    for(x <- (valueConnector.minVal to valueConnector.maxVal by tickUnit(valueConnector.minVal, valueConnector.maxVal, 500)))
+      dataSeries.getData().add(new XYChart.Data(x, fuzzyTerm.func(x).value))
+    plot.getData.add(dataSeries)
+
   }
 
   def addMemberFunction(event: ActionEvent): Unit ={
