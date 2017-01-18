@@ -47,6 +47,7 @@ class ConfigEditorPresenter extends Initializable{
     val controller = loader.getController[MemberFunctionEditorPresenter]
     controller.initData(config, valueConnector)
     println(s"before: $config")
+    stage.setTitle(valueConnector.name)
     stage.showAndWait()
     config = controller.config
     println(s"after: $config")
