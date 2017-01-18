@@ -33,8 +33,7 @@ class Fuzzy(config: FuzzyConfig) extends Runnable {
         mainPresenter.pos2.set(carBack.position)
 
         mainPresenter.dist.set(carFront.position - carBack.position)
-        mainPresenter.addnewPositionsToGraph(carFront.position, carBack.position, tick)
-        mainPresenter.addnewSpeedToGraph(carFront.speed, carBack.speed, tick)
+        mainPresenter.addDataToGraph(carFront, carBack, tick)
       })
       controller.tick()
       tick += 1

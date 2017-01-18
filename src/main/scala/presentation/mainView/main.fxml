@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="711.0" prefWidth="828.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.mainView.MainPresenter">
+<BorderPane maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="711.0" prefWidth="933.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="presentation.mainView.MainPresenter">
    <center>
       <SplitPane dividerPositions="0.7181008902077152" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
          <items>
@@ -24,6 +24,14 @@
                            </content>
                       </Tab>
                         <Tab fx:id="speedChartTab" text="Speed Graph">
+                            <content>
+                            </content>
+                        </Tab>
+                        <Tab fx:id="accChartTab" text="Acceleration Graph">
+                            <content>
+                            </content>
+                        </Tab>
+                        <Tab fx:id="forceChartTab" text="Engine Force Graph">
                             <content>
                             </content>
                         </Tab>
@@ -70,7 +78,7 @@
                         </GridPane>
                      </children>
                   </HBox>
-                  <StackPane prefHeight="150.0" prefWidth="200.0">
+                  <StackPane prefHeight="150.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                      <children>
                         <Label fx:id="tfDist" alignment="TOP_LEFT" text="Label">
                            <font>
@@ -106,7 +114,7 @@
                               <Insets bottom="10.0" left="10.0" top="10.0" />
                            </HBox.margin>
                         </GridPane>
-                        <Slider fx:id="sliderNewton" min="-8000.0" max="3000.0" orientation="VERTICAL">
+                        <Slider fx:id="sliderNewton" max="3000.0" min="-8000.0" orientation="VERTICAL">
                            <HBox.margin>
                               <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
                            </HBox.margin>

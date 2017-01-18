@@ -17,6 +17,7 @@ import javafx.util.converter.NumberStringConverter
 import model.BackgroundThread
 import model.fuzzyModel.DefaultConfig
 import model.fuzzyModel.entity.FuzzyConfig
+import model.physicalModel.Car
 import presentation.configEditor.ConfigEditorPresenter
 
 /**
@@ -60,6 +61,12 @@ class MainPresenter extends Initializable {
   @FXML
   var speedChartTab: Tab = _
 
+  @FXML
+  var forceChartTab: Tab = _
+
+  @FXML
+  var accChartTab: Tab = _
+
   var newton1: DoubleProperty = new SimpleDoubleProperty()
   var acc1: DoubleProperty = new SimpleDoubleProperty()
   var speed1: DoubleProperty = new SimpleDoubleProperty()
@@ -73,12 +80,17 @@ class MainPresenter extends Initializable {
   var dist: DoubleProperty = new SimpleDoubleProperty()
 
 
-  var carFrontposition: XYChart.Series[Number, Number] = _
-  var carBackposition: XYChart.Series[Number, Number] = _
-
+  var carFrontPosition: XYChart.Series[Number, Number] = _
+  var carBackPosition: XYChart.Series[Number, Number] = _
 
   var carFrontSpeed: XYChart.Series[Number, Number] = _
   var carBackSpeed: XYChart.Series[Number, Number] = _
+
+  var carFrontForce: XYChart.Series[Number, Number] = _
+  var carBackForce: XYChart.Series[Number, Number] = _
+
+  var carFrontAcc: XYChart.Series[Number, Number] = _
+  var carBackAcc: XYChart.Series[Number, Number] = _
 
   override def initialize(url: URL, resourceBundle: ResourceBundle): Unit = {
     Bindings.bindBidirectional(tfNewton1.textProperty(), newton1, new NumberStringConverter())
@@ -97,6 +109,8 @@ class MainPresenter extends Initializable {
 
     initSpeedChart
     initPosChart
+    initForceChart
+    initAccChart
   }
   def initSpeedChart: Unit ={
     val xAxisPositionChart  = new NumberAxis()
@@ -115,21 +129,49 @@ class MainPresenter extends Initializable {
     val yAxisPositionChart = new NumberAxis()
 
     val positionChart = new AreaChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
-    carFrontposition = new XYChart.Series[Number, Number]()
-    carBackposition = new XYChart.Series[Number, Number]()
+    carFrontPosition = new XYChart.Series[Number, Number]()
+    carBackPosition = new XYChart.Series[Number, Number]()
 
-    positionChart.getData.addAll(carFrontposition, carBackposition)
+    positionChart.getData.addAll(carFrontPosition, carBackPosition)
     posChartTab.setContent(positionChart)
   }
 
-  def addnewSpeedToGraph(carFront: Double, carBack: Double, tick: Int): Unit = {
-    carFrontSpeed.getData().add(new XYChart.Data(tick, carFront));
-    carBackSpeed.getData().add(new XYChart.Data(tick, carBack));
+  def initForceChart: Unit ={
+    val xAxisPositionChart  = new NumberAxis()
+    val yAxisPositionChart = new NumberAxis()
+
+    val forceChart = new AreaChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
+    carFrontForce = new XYChart.Series[Number, Number]()
+    carBackForce = new XYChart.Series[Number, Number]()
+
+    forceChart.getData.addAll(carFrontForce, carBackForce)
+    forceChartTab.setContent(forceChart)
   }
 
-  def addnewPositionsToGraph(carFront: Double, carBack: Double, tick: Int): Unit ={
-    carFrontposition.getData().add(new XYChart.Data(tick, carFront));
-    carBackposition.getData().add(new XYChart.Data(tick, carBack));
+  def initAccChart: Unit ={
+    val xAxisPositionChart  = new NumberAxis()
+    val yAxisPositionChart = new NumberAxis()
+
+    val accChart = new AreaChart[Number, Number](xAxisPositionChart, yAxisPositionChart)
+    carFrontAcc = new XYChart.Series[Number, Number]()
+    carBackAcc = new XYChart.Series[Number, Number]()
+
+    accChart.getData.addAll(carFrontAcc, carBackAcc)
+    accChartTab.setContent(accChart)
+  }
+
+  def addDataToGraph(carFront: Car, carBack: Car, tick: Int): Unit = {
+    carFrontSpeed.getData().add(new XYChart.Data(tick, carFront.speed));
+    carBackSpeed.getData().add(new XYChart.Data(tick, carBack.speed));
+
+    carFrontPosition.getData().add(new XYChart.Data(tick, carFront.position));
+    carBackPosition.getData().add(new XYChart.Data(tick, carBack.position));
+
+    carFrontForce.getData().add(new XYChart.Data(tick, carFront.engineForce));
+    carBackForce.getData().add(new XYChart.Data(tick, carBack.engineForce));
+
+    carFrontAcc.getData().add(new XYChart.Data(tick, carFront.acceleration));
+    carBackAcc.getData().add(new XYChart.Data(tick, carBack.acceleration));
   }
 
   def onPlay(event: ActionEvent): Unit = {
@@ -147,8 +189,12 @@ class MainPresenter extends Initializable {
   def resetCharts = {
     carFrontSpeed.getData.clear
     carBackSpeed.getData.clear
-    carFrontposition.getData.clear
-    carBackposition.getData.clear
+    carFrontPosition.getData.clear
+    carBackPosition.getData.clear
+    carFrontForce.getData.clear
+    carBackForce.getData.clear
+    carFrontAcc.getData.clear
+    carBackAcc.getData.clear
   }
 
   def onReset(event: ActionEvent): Unit ={
