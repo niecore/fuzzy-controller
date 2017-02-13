@@ -1,5 +1,5 @@
 %http://www.daniel-brettschneider.de/allgemein/latex-vorlage-fur-hausarbeiten-oder-abschlussarbeiten
-\documentclass[12pt,a4paper,bibliography=totocnumbered,listof=totocnumbered]{article}
+\documentclass[12pt,a4paper,bibliography=totocnumbered,listof=totocnumbered]{scrartcl}
 
 \usepackage[autostyle=true,german=quotes]{csquotes}
 \usepackage[utf8]{inputenc}
@@ -172,6 +172,8 @@
 % ----------------------------------------------------------------------------------------------------------
 \section{Einleitung}
 
+Um den Sinn sowie die Einsatzgebiete von Fuzzy-Logic zu verstehen, betrachten wir ein kurzes Beispiel: Ziel soll es seien einen Roboter zu bauen der Eier so kochen kann. Wichtig hierbei ist, dass das Eigelb wachsweich sein sollte. Um den Vorgang des Eier kochens besser zu verstehen fragen wir bei einem Koch nach dem Perfekten Algorithmus nach. Er sagt uns, werfe das Ei in kochendes Wasser und nehme es nach 5 Minuten wieder heraus. Der Roboter arbeitet nun nach genau diesem Algorithmus, doch mussten wir feststellen, dass es vorkommen kann das manche Eier zu hart oder auch zu weich gekocht werden. Darauf hin sprechen wir erneut mit dem Koch. Diesmal sagt er uns, dass die Eier etwas länger kochen sollen falls sie größer sind und etwas kürzer kochen sollen wenn sie kleiner sind. Diese zwei Aussagen lassen sich nun schwer in einen Algorithmus umsetzen, da der Roboter nicht genau weiß er unter einem kleiner bzw. größerem Ei verstehen soll. Er kann auch den Begriff \enquote{Etwas kürzer/länger} nicht begreifen. Um dem Roboter ein wenig zu helfen, definieren wir dass ein kleines Ei $40-49g$, ein normales Ei $50-60g$ und ein großes Ei $61-70g$ wiegt und das \enquote{Etwas kürzer/länger} eine Minute weniger- bzw. mehr bedeutet. Diesen Vorgang nennt man Partitionierung. Unser Roboter kann mit diesen Informationen die Eier schon fast befriedigend kochen. Wir vermuten jedoch, dass das System noch besser arbeiten könnte. Wenn ein Ei genau $60.99g$ wiegt, wird es von unserem Roboter für ein normales Ei gehalten und es wird genau 5 Minuten gekocht. Wäre es möglich, dass der menschliche Koch dieses Ei anders behandeln würde? Ja, er würde das Ei wahrscheinlich als ein mittelgroßes Ei behandeln und es 5.5 Minuten kochen, da es in der Gewichtseinstufung genau zwischen zwei Klassen liegt. Wie man ein solches Verhalten auf einen Roboter übertragen kann wird in den folgenden Kapiteln betrachtet.
+
 \subsection{Anwendungsgebiete}
 
 \section{Fuzzy-Logic Grundlagen}
@@ -185,7 +187,17 @@ In der klassichen Mengenlehre, in der Domaine von Fuzzy-Logic auch scharfe Logig
 \label{subsection:Fuzzy-Mengen}
 \subsection{Fuzzy-Mengen}
 
-In der Domain der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrer Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Wertemenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1] hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören. Die Menge aller Fuzzy-Mengen von $X$ wird als $F(X)$ bezeichnet. 
+In der Domain der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrer Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Wertemenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1] hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören. Die Menge aller Fuzzy-Mengen von $X$ wird als $F(X)$ bezeichnet. Der Zugehörigkeitsgrad sollte nicht mit einer Wahrscheinlichkeit verwechselt werden. Dazu wird hier ein Zitat aufgeführt das die Unterschiede zwischen einem Zugehörigkeitsgrad, einer Wahrscheinlichkeit und einer Messung klar machen soll.
+
+\begin{quote}
+Question: Is there a salami sandwich in the refrigator? \\
+Answer: 0.5 \\
+If probability: then there is or isn’t, with probability one half \\
+If measure: then there is half a salami sandwich there \\
+If fuzzy: then there is something there, but it isn’t really a salami sandwich. \\
+Perhaps it is some other kind of sandwich, or salami without the bread... \\
+\emph{Sol Golomb}
+\end{quote}
 
 \newtheorem{fuzzymenge}{Definition}
 \begin{fuzzymenge}
@@ -319,7 +331,7 @@ Das allgemeine Entwurfsschema für einen Fuzzy Regler ist:
 	\item Festlegung der linguistischen Variablen durch Terme samt Zugehörigkeitsfunktionen
 	für die in 1. eingeführten Größen.
 	\item Erstellung der Regelbasis.
-	\item Festlegung der Methoden zur Fuzzifizierung und Defuzzifizierung.
+	\item Festlegung der Methoden zur Fuzzyfizierung und Defuzzyfizierung.
 	\item Festlegung der Inferenzmethode.
 \end{enumerate}
 
@@ -331,12 +343,60 @@ Bei diesem Ansatz formuliert der Experte des Systems eine Liste von $k$ verschie
 	\textbf{if} \; \xi_1 \; \textbf{is} \; A_{i1} \; \textbf{and... and} \; \xi_n \; \textbf{is} \; A_{in} \; \textbf{then} \; \eta \;\textbf{is} \;B
 \end{equation}
 
-Wobei $A_{i1},...,A_{in}$ und $B$ linguistische Terme sind. Diese müssen bereits vorher vom Experten des Systems bestimmt und den entsprechenden Fuzzy-Mengen zugeordnet werden. Diesen Vorgang nennt man auch Partitionierung. Dazu werden auf der Menge der Eingangsgrößen $X_n$ und der Ausgangsgröße $Y$ $p$ verschiedene Fuzzy-Mengen definiert und jede dieser Fuzzy-Mengen mit einem linguistischem Term zugeordnet. Hierzu können die in Kapitel \ref{representationsformen} vorgestellen Repräsentationsformen wie z.B. Dreiecksfunktionen oder Trapezfunktionen verwendet werden. Der Experte kann bei der Partitionierung entscheiden wie fein oder grob er den Wertebereich unterteilen möchte. Bei einer groben Partitionierung mit z.B. drei Fuzzy-Mengen benötigt man nicht viele Regeln und die Berechnung erfolgt schnell. Eine feinere Partitionierung mit fünf, sieben oder neun Fuzzy-Mengen liefert eine feinere Regelung. Häufig werden die Fuzzy-Mengen so gewählt, dass sie sich höchstens bis zu einem maximalen Grad von 0.5 überschneiden. Dies wird als Disjunktheitsforderung bezeichnet.
+Wobei $A_{i1},...,A_{in}$ und $B$ linguistische Terme sind. Diese müssen bereits vorher vom Experten des Systems bestimmt und den entsprechenden Fuzzy-Mengen zugeordnet werden. Diesen Vorgang nennt man auch Partitionierung. Dazu werden auf der Menge der Eingangsgrößen $X_n$ und der Ausgangsgröße $Y$ $p$ verschiedene Fuzzy-Mengen definiert und jede dieser Fuzzy-Mengen mit einem linguistischem Term zugeordnet. Hierzu können die in Kapitel \ref{representationsformen} vorgestellen Repräsentationsformen wie z.B. Dreiecksfunktionen oder Trapezfunktionen verwendet werden. Der Experte kann bei der Partitionierung entscheiden wie fein oder grob er den Wertebereich unterteilen möchte. Bei einer groben Partitionierung mit z.B. drei Fuzzy-Mengen benötigt man nicht viele Regeln und die Berechnung erfolgt schnell. Eine feinere Partitionierung mit fünf, sieben oder neun Fuzzy-Mengen liefert eine feinere Regelung. Oft werden linguistische Terme wie \enquote{Negativ groß}, \enquote{Negativ klein}, \enquote{Ungefähr Null}, \enquote{Positiv klein} und \enquote{Positiv groß} gewählt. Häufig werden die Fuzzy-Mengen so aufgeteilt, dass sie sich höchstens bis zu einem maximalen Grad von 0.5 überschneiden. Dies wird als Disjunktheitsforderung bezeichnet.
 
 \newtheorem{disjunktheitsforderung}{Definition}
 \begin{disjunktheitsforderung}
-	Disjunktheitsforderung: $i \neq j \rightarrow sup_{x \in X} (min(\mu_i(x), \mu_k(x))}) \leq 0.5$
+	Disjunktheitsforderung: $i \neq j \rightarrow sup_{x \in X} (min(\mu_i(x), \mu_k(x))) \leq 0.5$
 \end{disjunktheitsforderung}
+
+Jede der $1...k$ Regeln trägt nun einen Teil der Definition von $\eta = \varphi(\xi_1,..., \xi_n)$ bei. So wird jede Regel einzeln ausgewertet und dann mit der festgelegten Inferenzmethode zu der gesamt Lösung hinzugefügt. Die
+
+Diese Auswertung einer Regel lässt sich in drei Schritte unterteilen:
+
+\begin{enumerate} 
+	\item Prämissenauswertung
+	\item Aktivierung
+	\item Aggregation
+\end{enumerate}
+
+\paragraph{Prämissenauswertung}
+
+Für die Auswertung einer Regel wird zunächst der Akzeptanzgrad dieser Regel bestimmt. Dazu wird für jeden linguistischen Term der Prämisse der Zugehörigkeitsgrad für den kürzlich gemessene Messwert bestimmt. Also $\mu_v (x_v)$ mit $v = 1...n$. Da es in einer Regel mehrere Prämissen geben kann, die mit den Operatoren $\left[and, or\right]$ verknüpft werden können, müssen auch die Zugehörigkeitsgrade der $n$-verschiedenen Prämissenteilen durch eine geeignete Konjuktion, z.B. Minimum für $and$-Verknüpfungen, verknüpft werden (siehe Kapitel \ref{fuzzy-operatoren}).
+
+\paragraph{Aktivierung}
+
+Die Konklusion ergibt dann eine Fuzzy-Menge von Stellwerten. Um die Aktivierung der Konklusion zu bestimmen muss der linguistische Term mit dem Akzeptanzgrad der Prämisse verknüpft werden. Dazu wird die sogenannte Inferenzmethode gewählt. Die zwei meist verbreitetsten Methoden sind: 
+
+\begin{enumerate} 
+	\item MAX-MIN-Inferenz
+	\item MAX-PROD-Inferenz
+\end{enumerate}
+
+\subparagraph{MAX-MIN-Inferenz}
+
+Bei der MAX-MIN-Inferenz wird die Ausgabe Fuzzy-Menge $B$ an der Höhe des minimalen Akzeptanzgrad der Prämisse gekappt. 
+
+\begin{equation}
+	output^{R_r}_{x_1...x_n}:  y \rightarrow min(\mu_{1,r}(x_1), ..., \mu_{n,r}(x_n), \mu_r(y))
+\end{equation}
+
+\subparagraph{MAX-PROD-Inferenz}
+
+Bei der MAX-PROD-Inferenz wird die Ausgabe Fuzzy-Menge $B$ mit der Summe der Akzeptanzgrad multipliziert. Bei der SUM-PROD-Inferenz enstehen u.U. Fuzzy-Mengen mit einem Zugehörigkeitsgrad größer 1. Solche Fuzzy-Mengen nennt man nicht normierte Fuzzy-Mengen.
+
+\begin{equation}
+output^{R_r}_{x_1...x_n}:  y \rightarrow \sum_{i = 1}^{n} \mu_{i,r}(x_i) \cdot \mu_r(y)
+\end{equation}
+
+Für beide Inferenzmethoden gilt, dass in dem Fall wenn der Akzeptanzgrad 1 ist d.h. erfüllen die Messwerte die Prämisse der Regel vollständig, liefert die Regel gerade ihre Konklusions-Fuzzy-Menge als Ausgabe. Falls der Akzeptanzgrad 0 ist, wird eine Fuzzy-Menge geliefert, die immer 0 ist.
+
+\paragraph{Aggregation}
+
+Die Ausgabe Fuzzy-Menge $B_{1...k}$ werden mithilfe der Maximumbildung zusammengefügt.
+
+
+
 
 
 
