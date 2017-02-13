@@ -167,6 +167,10 @@
 \setcounter{section}{0}
 \pagenumbering{arabic}
 \setcounter{page}{1}
+
+\newtheorem{bsp}{Beispiel}
+\newtheorem{defnt}{Definition}
+
 % ----------------------------------------------------------------------------------------------------------
 % Einleitung
 % ----------------------------------------------------------------------------------------------------------
@@ -175,6 +179,8 @@
 Um den Sinn sowie die Einsatzgebiete von Fuzzy-Logic zu verstehen, betrachten wir ein kurzes Beispiel: Ziel soll es seien einen Roboter zu bauen der Eier so kochen kann. Wichtig hierbei ist, dass das Eigelb wachsweich sein sollte. Um den Vorgang des Eier kochens besser zu verstehen fragen wir bei einem Koch nach dem Perfekten Algorithmus nach. Er sagt uns, werfe das Ei in kochendes Wasser und nehme es nach 5 Minuten wieder heraus. Der Roboter arbeitet nun nach genau diesem Algorithmus, doch mussten wir feststellen, dass es vorkommen kann das manche Eier zu hart oder auch zu weich gekocht werden. Darauf hin sprechen wir erneut mit dem Koch. Diesmal sagt er uns, dass die Eier etwas länger kochen sollen falls sie größer sind und etwas kürzer kochen sollen wenn sie kleiner sind. Diese zwei Aussagen lassen sich nun schwer in einen Algorithmus umsetzen, da der Roboter nicht genau weiß er unter einem kleiner bzw. größerem Ei verstehen soll. Er kann auch den Begriff \enquote{Etwas kürzer/länger} nicht begreifen. Um dem Roboter ein wenig zu helfen, definieren wir dass ein kleines Ei $40-49g$, ein normales Ei $50-60g$ und ein großes Ei $61-70g$ wiegt und das \enquote{Etwas kürzer/länger} eine Minute weniger- bzw. mehr bedeutet. Diesen Vorgang nennt man Partitionierung. Unser Roboter kann mit diesen Informationen die Eier schon fast befriedigend kochen. Wir vermuten jedoch, dass das System noch besser arbeiten könnte. Wenn ein Ei genau $60.99g$ wiegt, wird es von unserem Roboter für ein normales Ei gehalten und es wird genau 5 Minuten gekocht. Wäre es möglich, dass der menschliche Koch dieses Ei anders behandeln würde? Ja, er würde das Ei wahrscheinlich als ein mittelgroßes Ei behandeln und es 5.5 Minuten kochen, da es in der Gewichtseinstufung genau zwischen zwei Klassen liegt. Wie man ein solches Verhalten auf einen Roboter übertragen kann wird in den folgenden Kapiteln betrachtet.
 
 \subsection{Anwendungsgebiete}
+
+Fuzzy-Logic wurde schon erstmal 1964 in einen Artikel von Zadeh vorgestellt \cite{ZZG84}. In den 80er Jahren wurde dann Fuzzy-Logic vermehrt in Japan eingesetzt. Erfolgsgeschichten sind hierbei die U-Bahn in Sendai, und später die U-Bahn in Tokyo, die mit Hilfe von Fuzzy-Regelung eine sehr komfortables Anfahren und Abbremsen ermöglichen und effizienter arbeiten als ein menschlicher Bahnführer. Heute wird Fuzzy-Logic in Bildstabilisatoren für Kameras, Waschmaschinen oder der Automobil Industrie eingesetzt.
 
 \section{Fuzzy-Logic Grundlagen}
 
@@ -187,7 +193,7 @@ In der klassichen Mengenlehre, in der Domaine von Fuzzy-Logic auch scharfe Logig
 \label{subsection:Fuzzy-Mengen}
 \subsection{Fuzzy-Mengen}
 
-In der Domain der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrer Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Wertemenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1] hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören. Die Menge aller Fuzzy-Mengen von $X$ wird als $F(X)$ bezeichnet. Der Zugehörigkeitsgrad sollte nicht mit einer Wahrscheinlichkeit verwechselt werden. Dazu wird hier ein Zitat aufgeführt das die Unterschiede zwischen einem Zugehörigkeitsgrad, einer Wahrscheinlichkeit und einer Messung klar machen soll.
+In der Domain der Fuzzy-Logic wird eine Menge über die Zugehörigkeitsgrade ihrer Elemente definiert. Die Zugehörigkeit eines Elementes $x$ zu einer Menge $A$ wird über die Zugerhörigkeitsfunktion $\mu_A(x)$ definiert. Wichtig ist hierbei, dass jedes Element aus der Wertemenge $X$ einen Zugehörigkeitsgrad im reellen Wertebereich [0,1], also nicht negative, hat. Ebenso kann jedes Element weiteren Mengen mit weiteren Zugehörigkeiten angehören. Die Menge aller Fuzzy-Mengen von $X$ wird als $F(X)$ bezeichnet. Eine Zugerhörigkeitsfunktion $\mu_A(x)$ sollte außerdem konvex sein. Der Zugehörigkeitsgrad sollte nicht mit einer Wahrscheinlichkeit verwechselt werden. Dazu wird hier ein Zitat aufgeführt das die Unterschiede zwischen einem Zugehörigkeitsgrad, einer Wahrscheinlichkeit und einer Messung klar machen soll.
 
 \begin{quote}
 Question: Is there a salami sandwich in the refrigator? \\
@@ -199,67 +205,134 @@ Perhaps it is some other kind of sandwich, or salami without the bread... \\
 \emph{Sol Golomb}
 \end{quote}
 
-\newtheorem{fuzzymenge}{Definition}
-\begin{fuzzymenge}
+\begin{defnt}
 Eine Fuzzy-Menge $\mu$ von $X$ ist eine Funktion von der Referenzmenge
 $X$ in das Einheitsintervall, also $\mu : X \rightarrow \left [0,1\right]$
-\end{fuzzymenge}
+\end{defnt}
+
+
+\begin{defnt}
+	nicht negative Zugerhörigkeitsfunktion:
+	$(\forall x \in X): \mu_A(x) \geq 0 $
+\end{defnt}
+
+
+\begin{defnt}
+	konvexe Zugerhörigkeitsfunktion (siehe auch Abbildung \ref{fig:convex}:
+	$(\forall a,b,c \in X, a \le b \le c): \mu_A(c) \geq min(\mu_A(a), \mu_A(b)) $
+\end{defnt}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/convex}
+	\caption{Eine konvexe Fuzzy-Menge (a) und eine nicht konvexe Fuzzy-Menge (b)}
+	\label{fig:convex}
+\end{figure}
+
 
 \subsubsection{Linguistische Terme}
 
-Um auf eine Fuzzy-Mengen innerhalb des Fuzzifizierungs-Interface oder der Entscheidungslogik zu referenzieren, werden den Fuzzy-Mengen Linguistische Terme zugeordnet. Linguistische Terme sind formal nur Bezeichner für Fuzzy-Mengen. Es ist jedoch Sinnvoll erst den Linguistische Term und anschließend die dazu passende Fuzzy-Menge zu konstruieren. Die Definition dieser Zugehörigkeit wird auch Partitionierung genannt. Es ist Aufgabe des Domain-Experten diese Partitionierung vorzunehmen. Die Partitionierung sowie die dazugehörigen Linguistischen Termen stellen den ersten Teil der Wissensbasis dar.
+Um auf eine Fuzzy-Mengen innerhalb des Fuzzifizierungs-Interface oder der Entscheidungslogik zu referenzieren, werden den Fuzzy-Mengen Linguistische Terme zugeordnet. Linguistische Terme sind formal nur Bezeichner für Fuzzy-Mengen. Es ist jedoch Sinnvoll erst den Linguistische Term und anschließend die dazu passende Fuzzy-Menge zu konstruieren. Die Definition dieser Zugehörigkeit wird auch Partitionierung genannt. Es ist Aufgabe des Domain-Experten diese Partitionierung vorzunehmen.
 
-\newtheorem{fuzzyterm}{Definition}
-\begin{fuzzyterm}
+
+\begin{defnt}
 Eine Linguistischer Term ist eine umgangsprachliche Beschreibung einer Fuzzy-Menge, also \enquote{Sehr groß}$\rightarrow X \rightarrow \left[0,1\right]$
-\end{fuzzyterm}
+\end{defnt}
 
-\newtheorem{Bsp}{Beispiel}
-\begin{Bsp} 
+
+\begin{bsp} 
 Eine Familie ist auf der Suche nach einer neuen Wohnung. Ein wichtiges Kriterium für die neue Wohnung sind die Anzahl der Räume. Der Linguistische Terme \enquote{angemessene Anzahl von Räumen für eine Familie mit 3 Kindern} könnte sich durch diese Fuzzy-Menge beschreiben lassen: $\mu: {1...8} \rightarrow  \left[0,1\right]$ mit folgenden Zugehörigkeitsgraden: $\mu(1) = 0,\:\mu(2) = 0.2,\:\mu(3) = 0.5, \mu(4) = 0.7,\mu(5) = 1, \mu(6) = 1, \mu(7) = 0.8
 \mu(8) = 0.2$. Bei diese Fuzzy-Menge wird nur der Wertbereich $1...8$ betrachtet. Die Fuzzy-Menge sagt aus, dass 6 Räume optimal wären.
-\end{Bsp} 
+\end{bsp} 
 
 \label{representationsformen}
 \subsubsection{Repräsentationsformen}
 
 Bisher haben wir gesehen, dass sich Fuzzy-Mengen durch durch die Zugehörigkeitsgrade für jedes Element $x_i$ aus $X$ definieren lassen. Wenn die $X$ nun aber einen sehr großen Wertebereich hat und unendlich ist, lässt sich $\mu(x)$ am besten als einen geeigneten Funktionsterm ausdrücken. Wenn $X = \mathbb{R}$ dann werden oft Linguistische Terme wie \enquote{Groß} oder \enquote{Klein} verwendet. Als Interpretation von \enquote{Groß} kann z.B. eine monoton steigende Funktion mit den Parametern $a$ und $b$ gewählt werden. Wobei $a$ den Beginn den Anstiegs und $b$ den Zeitpunkt von $\mu(x) = 1$ bestimmt.
 
-\begin{quotation}
-$y_{a,b}(x)=\begin{cases}
+\begin{equation}
+y_{a,b}(x)=\begin{cases}
 0				& x \leq a \\
 \frac{x-a}{b-a} & a \leq x \leq b \\
 1 				& x \geq b 
-\end{cases}$
-\end{quotation}
+\end{cases}
+\end{equation}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/opentriangle}
+	\caption{Eine monoton steigende Funktion mit den Parametern $a=2000, b = 3000$}
+	\label{fig:opentriangle}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.5\linewidth]{img/triangle}
+	\caption{Eine Dreiecksfunktion mit den Parametern $a=250, m = 300,  b = 350$}
+	\label{fig:triangle}
+\end{figure}
+
+
 
 Linguistische Terme der Art \enquote{Circa 10} oder \enquote{Etwas schnell} lassen sich am besten durch symmetrische Dreiecksfunktionen ausdrücken mit den Parametern $m$ $a$ und $b$ ausrücken wobei $m$ den Mittelpunkt, $a, b$ den Start- sowie Endpunkt des Dreiecks bestimmen.
 
-\begin{quotation}
-$y_{a,m,b}(x)=\begin{cases}
+\begin{equation}
+y_{a,m,b}(x)=\begin{cases}
 0				& x \leq a \\
 \frac{x-a}{b-a} & a \leq x \leq m  \\
 \frac{b-x}{b-m} & m \leq x \leq b  \\
-1 				& x \geq b \\
-\end{cases}$
-\end{quotation}
+0 				& x \geq b \\
+\end{cases}
+\end{equation}
 
 Für Linguistische Terme der Art \enquote{Zwischen 3 und 5} werden oft Trapez-Funktionen verwendet. Die Trapez-Funktion hat die Parameter $a,b,c$ und $d$. Die Parameter stellen jeweils die Kanten des Trapezes dar.
 
-\begin{quotation}
-$y_{a,b,c,d}(x)=\begin{cases}
+\begin{equation}
+y_{a,b,c,d}(x)=\begin{cases}
 \frac{x-a}{b-a} & a \leq x \leq b  \\
 1 				& b \leq x \leq c \\
 \frac{x-d}{c-d} & c \leq x \leq d \\
 0				& x \le a \; or \; x \ge d  
-\end{cases}$
-\end{quotation}
+\end{cases}
+\end{equation}
 
+\label{fuzzy-operatoren}
+\subsection{Fuzzy-Operatoren}
 
+Fuzzy-Operatoren sind notwendig sobald mehrere Fuzzy-Mengen miteinander verknüpft werden sollen. Aus der klassischen Mengenlehre kennt man die Operatoren Komplement, Durchschnitt und Vereinigung. Diese wurden auch in der Orginalarbeit von 1965 von Zadeh mit wie folgt für Fuzzy-Mengen definiert.
 
+\begin{defnt}[Komplement]
+	Das Komplement bzw. die NICHT-Operation ist definiert als: 
+	\begin{equation}
+		(\forall x \in X) : \mu_{\not A}( x) = 1 - \mu_A(x)
+	\end{equation}
+	
+\end{defnt}
+
+\begin{defnt}[Durchschnitt]
+	Der Durchschnitt bzw. die UND-Operation ist definiert als: 
+	\begin{equation}
+		(\forall x \in X) : \mu_{A \bigcap B}( x) = min(\mu_A(x),\mu_B(x))
+	\end{equation}
+\end{defnt}
+
+\begin{defnt}[Vereinigung]
+	Die Vereinigung bzw. die ODER-Operation ist definiert als: 
+	\begin{equation}
+		(\forall x \in X) : \mu_{A \bigcup B}( x) = max(\mu_A(x),\mu_B(x))
+	\end{equation}	  
+\end{defnt}
+
+Es gibt jedoch die Möglichkeit diese Definitionen für die Operationen durch andere zu ersetzen solange die sogennante t-Norm für die Funktion eingehalten wird. So hat zum Beispiel die Verwendung des Minimums den Nachteil, dass manche Werte gar nicht beachtet werden.
+
+\begin{defnt}
+	Eine Funktion $F: \left[0,1\right]^2 \rightarrow \left[0,1\right]$ heißt t-Norm, wenn folgende Bedingen gelten: Kommutativität, Assoziativität, Monotonie sowie die Existenz eines neutralem Elements.
+	
+\end{defnt}
 \subsection{Fuzzy-Relationen}
 
-\subsection{Fuzzy-Operationen}
+
 
 \section{Fuzzy-Regler}
 
@@ -277,10 +350,9 @@ Um die Grundbegriffe der Regelungstechnik zu verstehen betrachten wir ein System
 
 Um den Vorteil des Fuzzy-Reglers zu verstehen, sollte man sich ein konkretes regelungstechnisches Problem vor Augen führen.
 
-\newtheorem{stabbalance}{Beispiel}
-\begin{stabbalance} 
+\begin{bsp} 
 	Das Stabbalance-Problem beschreibt ein System in dem ein Stab mit der Masse $m$ am Kopfende, der Masse $M$ am Fußende und der Länge $l$ vertikal, also parallel zur Erdanziehungskraft, ausbalanciert werden soll. Das untere Ende des Stabs darf in horizontaler Achse bewegt werden. Diese Bewegung stellt unsere Stellgröße $F$ dar. Die Ausgangsgröße ist der Winkel $\Theta$ des Stabs relative zur vertikalen Achse. Also wird $\Theta$ positiv, wenn der Stab nach rechts fällt und negative wenn der Stab nach links fällt. Zusätzlich zu dem Winkel $\Theta$ wird auch die Winkelgeschwindigkeit, also die Veränderung des Winkels, $\dot{\Theta} = \frac{d\Theta}{dt}$ betrachtet. Der Wertebereich $X_1$ für den Winkel $\Theta$ definieren wir im Interval $\left[-90,90\right]$ in der Einheit Grad und den Wertebreich $X_2$ im Interval $\left[-45, 45\right]$ in der Einheit $Grad \cdot s^{-1}$. Die Kraft $F$ wird in der Einheit Newton im Interval von $-10$ bis $+10$ definiert, also $Y=\left[-10, 10\right]$.
-\end{stabbalance}
+\end{bsp}
 
 Die klassische Regelungstechnik setzt vorraus, dass das zu regelnde System durch ein physikalisch-mathematisches Modell beschrieben werden kann. Das oben genannte Stabbalance-Problem lässt sich durch die folgende Differentialgleichung beschreiben (siehe Gl. \ref{eq:stabdiff}). In dieser Gleichung ist $F(t)$ so zu wählen, dass $\Theta(t)$ gegen Null konvergiert für $t \rightarrow \infty$. Der Vorteil bei diesem Problem ist, dass es ein mathematisches Modell gibt das den physikalischen Prozess des Systems annähernd gut beschreiben kann. Für viele andere Systeme gibt es jedoch kein bekanntes Modell oder dieses, in Form einer weiteren Differentialgleichung, lässt sich sehr schwer lösen.
 
@@ -343,12 +415,22 @@ Bei diesem Ansatz formuliert der Experte des Systems eine Liste von $k$ verschie
 	\textbf{if} \; \xi_1 \; \textbf{is} \; A_{i1} \; \textbf{and... and} \; \xi_n \; \textbf{is} \; A_{in} \; \textbf{then} \; \eta \;\textbf{is} \;B
 \end{equation}
 
-Wobei $A_{i1},...,A_{in}$ und $B$ linguistische Terme sind. Diese müssen bereits vorher vom Experten des Systems bestimmt und den entsprechenden Fuzzy-Mengen zugeordnet werden. Diesen Vorgang nennt man auch Partitionierung. Dazu werden auf der Menge der Eingangsgrößen $X_n$ und der Ausgangsgröße $Y$ $p$ verschiedene Fuzzy-Mengen definiert und jede dieser Fuzzy-Mengen mit einem linguistischem Term zugeordnet. Hierzu können die in Kapitel \ref{representationsformen} vorgestellen Repräsentationsformen wie z.B. Dreiecksfunktionen oder Trapezfunktionen verwendet werden. Der Experte kann bei der Partitionierung entscheiden wie fein oder grob er den Wertebereich unterteilen möchte. Bei einer groben Partitionierung mit z.B. drei Fuzzy-Mengen benötigt man nicht viele Regeln und die Berechnung erfolgt schnell. Eine feinere Partitionierung mit fünf, sieben oder neun Fuzzy-Mengen liefert eine feinere Regelung. Oft werden linguistische Terme wie \enquote{Negativ groß}, \enquote{Negativ klein}, \enquote{Ungefähr Null}, \enquote{Positiv klein} und \enquote{Positiv groß} gewählt. Häufig werden die Fuzzy-Mengen so aufgeteilt, dass sie sich höchstens bis zu einem maximalen Grad von 0.5 überschneiden. Dies wird als Disjunktheitsforderung bezeichnet.
+Wobei $A_{i1},...,A_{in}$ und $B$ linguistische Terme sind. Diese müssen bereits vorher vom Experten des Systems bestimmt und den entsprechenden Fuzzy-Mengen zugeordnet werden. Diesen Vorgang nennt man auch Partitionierung. Dazu werden auf der Menge der Eingangsgrößen $X_n$ und der Ausgangsgröße $Y$ $p$ verschiedene Fuzzy-Mengen definiert und jede dieser Fuzzy-Mengen mit einem linguistischem Term zugeordnet. Hierzu können die in Kapitel \ref{representationsformen} vorgestellen Repräsentationsformen wie z.B. Dreiecksfunktionen oder Trapezfunktionen verwendet werden. Der Experte kann bei der Partitionierung entscheiden wie fein oder grob er den Wertebereich unterteilen möchte. Bei einer groben Partitionierung mit z.B. drei Fuzzy-Mengen benötigt man nicht viele Regeln und die Berechnung erfolgt schnell. Eine feinere Partitionierung mit fünf, sieben oder neun Fuzzy-Mengen liefert eine feinere Regelung. Oft werden linguistische Terme wie \enquote{Negativ groß}, \enquote{Negativ klein}, \enquote{Ungefähr Null}, \enquote{Positiv klein} und \enquote{Positiv groß} gewählt. Häufig werden die Fuzzy-Mengen so aufgeteilt, dass sie sich höchstens bis zu einem maximalen Grad von 0.5 überschneiden. Dies wird als Disjunktheitsforderung bezeichnet. Ein Beispiel für eine Partitionierung ist in Abbildung \ref{fig:partitionierung} zu sehen.
 
-\newtheorem{disjunktheitsforderung}{Definition}
-\begin{disjunktheitsforderung}
-	Disjunktheitsforderung: $i \neq j \rightarrow sup_{x \in X} (min(\mu_i(x), \mu_k(x))) \leq 0.5$
-\end{disjunktheitsforderung}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/partitionierung}
+	\caption{Partiotionierung in 7 Fuzzy-Mengen. $ Y \rightarrow \left[-90,90\right]$}
+	\label{fig:partitionierung}
+\end{figure}
+
+
+\begin{defnt}
+	Disjunktheitsforderung: 
+	\begin{equation}
+		i \neq j \rightarrow sup_{x \in X} (min(\mu_i(x), \mu_k(x))) \leq 0.5
+	\end{equation}
+\end{defnt}
 
 Jede der $1...k$ Regeln trägt nun einen Teil der Definition von $\eta = \varphi(\xi_1,..., \xi_n)$ bei. So wird jede Regel einzeln ausgewertet und dann mit der festgelegten Inferenzmethode zu der gesamt Lösung hinzugefügt. Die
 
@@ -378,7 +460,7 @@ Die Konklusion ergibt dann eine Fuzzy-Menge von Stellwerten. Um die Aktivierung 
 Bei der MAX-MIN-Inferenz wird die Ausgabe Fuzzy-Menge $B$ an der Höhe des minimalen Akzeptanzgrad der Prämisse gekappt. 
 
 \begin{equation}
-	output^{R_r}_{x_1...x_n}:  y \rightarrow min(\mu_{1,r}(x_1), ..., \mu_{n,r}(x_n), \mu_r(y))
+	output^{R_r}_{x_1...x_n}:  y \mapsto min(\mu_{1,r}(x_1), ..., \mu_{n,r}(x_n), \mu_r(y))
 \end{equation}
 
 \subparagraph{MAX-PROD-Inferenz}
@@ -386,17 +468,88 @@ Bei der MAX-MIN-Inferenz wird die Ausgabe Fuzzy-Menge $B$ an der Höhe des minim
 Bei der MAX-PROD-Inferenz wird die Ausgabe Fuzzy-Menge $B$ mit der Summe der Akzeptanzgrad multipliziert. Bei der SUM-PROD-Inferenz enstehen u.U. Fuzzy-Mengen mit einem Zugehörigkeitsgrad größer 1. Solche Fuzzy-Mengen nennt man nicht normierte Fuzzy-Mengen.
 
 \begin{equation}
-output^{R_r}_{x_1...x_n}:  y \rightarrow \sum_{i = 1}^{n} \mu_{i,r}(x_i) \cdot \mu_r(y)
+output^{R_r}_{x_1...x_n}:  y \mapsto \sum_{i = 1}^{n} \mu_{i,r}(x_i) \cdot \mu_r(y)
 \end{equation}
 
 Für beide Inferenzmethoden gilt, dass in dem Fall wenn der Akzeptanzgrad 1 ist d.h. erfüllen die Messwerte die Prämisse der Regel vollständig, liefert die Regel gerade ihre Konklusions-Fuzzy-Menge als Ausgabe. Falls der Akzeptanzgrad 0 ist, wird eine Fuzzy-Menge geliefert, die immer 0 ist.
 
 \paragraph{Aggregation}
 
-Die Ausgabe Fuzzy-Menge $B_{1...k}$ werden mithilfe der Maximumbildung zusammengefügt.
+Die Ausgabe aktivierten Fuzzy-Mengen $B_{1...k}$ werden mithilfe der Maximumbildung zusammengefügt. Diese eine Ausgangs Fuzzy-Menge wird dann an das Defuzzifizierungs-Interface übergeben und mit der gewählten Defuzzifizierungs-Methoden (siehe Kapitel \ref{defuzzy}) in einen scharfen Wert umgewandelt.
 
+\begin{equation}
+	output_{x_1,..., x_n}: y \mapsto \max_{r \in (1,...,k)}(output^{R_r}_{x_1...x_n})
+\end{equation}
 
+\label{defuzzy}
+\subsection{Defuzzifizierungs-Methoden}
 
+Das Defuzzifizierungs-Interface erhält aus der Entscheidungslogik eine Fuzzy-Menge und soll daraus nun einen scharfen Stellwert ermitteln. Diesen Vorgang nennt man Defuzzifizierung. Es gibt verschiedene Defuzzifizierung-Methoden die diesen Prozess definieren. Die wichtigsten werden nun vorgestellt. Um die Wirkung der Defuzzifizierungs-Methoden auf die Stellgröße zu visualisieren betrachten wir ein Beispiel. Für jede Methode wird auch ein Plot der Stellgröße im Verlauf der Simulation gezeigt.
+
+\begin{bsp}
+	Ein durch eine Fuzzy-Regelung gesteuertes Auto soll einem anderen Auto folgen und einen angemessenen Abstand halten. Die Fuzzy-Regelung betrachtet dazu die Messgrößen Geschwindigkeit und Abstand und gibt die Stellgröße der Beschleunigungskraft $y \rightarrow \left[-8000, +4000\right]$ in der Einheit Newton. Diese Kraft stellt die Bremskraft sowie die Beschleunigungskraft dar. In dieser Simulation lassen wir das vordere Auto erst für 15 Sekunden mit Vollgas davon fahren und initiieren danach eine Vollbremsung.
+\end{bsp}
+
+\subsubsection{Maximum-Kriterium-Methode}
+
+Die Maximum-Kriterium-Methode ist die einfachste Defuzzifizierung-Methoden. Sie wählt einen beliebigen Wert aus $y \in Y$ aus für den die Zugehörigkeitsfunktion der Ausgangs-Fuzzy-Menge $output_{x_1,..., x_n}$ ihren maximalen Zugehörigkeitsgrad hat. Da hier nicht deterministisch gewählt wird, kann dies unter Umständen zu einem sprunghaften Stellverhalten führen und zwar genau dann, wenn es mehr als einen Wert $y \in Y$ mit $y = \max_{y \in Y}(output_{x_1,..., x_n}(y))$ gibt. Dies kann aber auch von Vorteil sein, wenn die Stellgröße keinen reellen Wert sondern z.B. eine Stellaktion darstellt. Anderenfalls führt diese Defuzzifizierung-Methoden zu einem sprunghaften Regelverhalten. Dieses Verhalten ist gut in Abbildung \ref{fig:max} zu erkennen. 
+
+\begin{equation}
+	output_{x_1,..., x_n}(\eta) \geq output_{x_1,..., x_n}(y) \forall y \in Y
+\end{equation}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/defuzzy/max3}
+	\caption{Verlauf der Stellgröße $\eta$ in der Beispielsimulation unter Verwendung der Maximum-Kriterium-Methode}
+	\label{fig:max}
+\end{figure}
+
+\subsubsection{Mean-of-Maxima-Methode}
+
+Die Mean-of-Maxima-Methode (MOM) wählt einen scharfen Stellwert indem sie den Mittelwert über die Menge $\max(output_{x_1,..., x_n})$ berechnet. Bei dieser Methode kann es vorkommen, dass $\eta \notin  \max(output_{x_1,..., x_n})$ gilt. Dies tritt bei nicht konvexen Ausgabe Fuzzy-Mengen auf und kann zu unvorhergesehen Folgen führe (siehe Beispiel \ref{fuzzyfail}). Die MOM-Methode führt außerdem, wenn symmetrischen Dreiecksfunktionen für die Partitionierung von $Y$ verwendet wurden, zu einem, unstetigen Verlauf der Stellgröße. Grund hierfür ist, dass eine Regel stets den Ausgang dominiert. Dies kann in physikalischen System eine starke Belastung für die Stellvorrichtung, etwa ein Servomotor, sein. Dieses Verhalten ist gut in Abbildung \ref{fig:mom} zu erkennen. 
+ 
+
+\begin{equation}
+\eta = \frac{1}{ | \max(output_{x_1,..., x_n)} | } \cdot \sum_{y\in \max(output_{x_1,..., x_n})} y
+\end{equation}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/defuzzy/mom3}
+	\caption{Verlauf der Stellgröße $\eta$ in der Beispielsimulation unter Verwendung der Mean-of-Maxima-Methode}
+	\label{fig:mom}
+\end{figure}
+
+\subsubsection{Center-of-Gravity-Methode}
+
+Die Center-of-Gravity-Methode (COG) wählt einen scharfen Stellwert indem sie den Flächeninhalt zwischen der Funktion $output_{x_1,..., x_n)}$ und der X-Achse betrachtet und daraus den Schwerpunkt berechnet. Der Stellwert ist dann die X-Koordinate dieses Schwerpunktes. Vorteil bei dieser Methode ist, dass fast immer ein stetiger Regelverlauf generiert wird. Grund hierfür ist, dass auch alle Regeln mit ihrem Aktzeptanzgrad berücksichtigt werden. Erst wenn die Messgrößen jetzt so stark springe, dass der Aktzeptanzgrad einer Prämisse innerhalb eines Berechnungsschrittes von einem relative hohen Wert auf 0 sinkt, springt auch die COG-Methode.
+
+\begin{equation}
+\eta = \frac{1}{\int_{y \in Y} output_{x_1,..., x_n}(y) dy} \cdot \int_{y \in Y} y \cdot output_{x_1,..., x_n}(y)dy
+\end{equation}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\linewidth]{img/defuzzy/center1}
+	\caption{Verlauf der Stellgröße $\eta$ in der Beispielsimulation unter Verwendung der Center-of-Gravity-Methode}
+	\label{fig:cog}
+\end{figure}
+
+\begin{bsp}
+	Die Defuzzifizierung der in Abbildung \ref{fig:defuzzy} dargestellten Fuzzy-Menge gibt als Stellgröße $F = \left[4,6\right]$ für die Maximum-Kriterium-Methode, $F = 5$ für die MOM-Methode und $F \approx 3,95$ für die COG-Methode.
+\end{bsp}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/defuzzy/defuzzy}
+	\caption{Stellwerte der verschiedenen Defuzzifikationsmethoden für eine Fuzzy-Menge.}
+	\label{fig:defuzzy}
+\end{figure}
+
+\subsection{Auswahlkriterien}
+
+Neben den drei vorgestellten Defuzzifizierungs-Methoden gibt es noch diverse Erweiterungen bzw. Varianten sowie weitere Methoden zur Defuzzyfizierung. Nun kommt die Frage auf, welche dieser Methoden nun die Beste sei und die Antwort auf diese Frage ist, dass es sehr Kontext- bzw. Problemabhängig ist. Wir betrachten nun vier Kriterien die bei der Auswahl der Defuzzifizierungs-Methoden helfen sollen.
 
 
 
