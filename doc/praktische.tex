@@ -166,11 +166,17 @@
 % ----------------------------------------------------------------------------------------------------------
 % Einleitung
 % ----------------------------------------------------------------------------------------------------------
+\begin{abstract} 
+	Die vorliegende Hausarbeit gibt einen Einstieg in die theoretische Fuzzy-Logik und behandelt dabei Fuzzy-Mengen, Fuzzy-Relation sowie Fuzzy-Operationen. Dem Leser soll bewusst gemacht werden worin sich die scharfe Mengenlehre von der der Fuzzy-Mengenlehre unterscheidet. An anschaulichen Beispielen wird erklärt was Linguistische Terme sind und wie diese repräsentiert werden können. Eigentliches Ziel ist die Untersuchung des Einsatzgebiets der Fuzzy-Regler, welches ein Teilgebiet der Fuzzy-Logik darstellt. Hier werden die Komponenten wie z.B. die Wissensbasis, das Fuzzyfizierungs- und Defuzzyfizierungs-Interface sowie die Entscheidungslogik vorgestellt. Da zur Zeit zwei Varianten (Mamdani sowie Takagi/Sugeno)  der Fuzzy-Regler verbreitet sind, werden diese beiden nacheinander vorgestellt und deren Vorteile aufgezeigt. Zuletzt werden die üblichen Defuzzifizierungsmethoden erklärt und an einem Beispiel veranschaulicht.
+\end{abstract} 
+\newpage
 
 \section{Problemstellung}
 
-In dem Problemszenario verfolgen sich zwei Autos. Das vordere Auto A wird von einem Menschen geregelt. Das Verfolger Auto B soll durch eine Fuzzy-Regelung gesteuert werden und Auto in einem angemessenen Abstand folgen. Auto B kennt lediglich die eigenen Messwert, dh. nicht die Geschwindigkeit des Auto A, sowie die Entfernung zu Auto A.
-Auto B und Auto A haben die gleichen physikalischen Eigenschaften. Die Simulation soll den physikalischen Gesetzen folgen, dh. Luftwiderstand, Höchstgeschwindigkeiten und ein insgesamt realistisches Verhalten ist gefordert. 
+Die gestellte Aufgabe zur praktischen Ausarbeitung kommt aus dem Themengebiet des autonomen Fahrens. Es soll ein Fuzzy Regler eingesetzt werden um ein Auto so zu steuern, dass es einem anderen, durch den Menschen gesteuerten, Auto folgt.  Hierbei ist zu beachten, dass das hier bei nur die Geschwindigkeit bzw. Bewegung in einer Achse kontrolliert wird. Das bedeutet, dass nur das Gas- sowie das Bremspedal jedoch nicht das Lenkrad geregelt werden muss. Außerdem gehen wir davon aus, dass es sich bei dem gesteuerten Auto um ein Auto mit Automatikgetriebe handelt und somit das Kuppeln sowie das Schalten der Gänge ebenfalls irrelevant ist. 
+
+Bei der Implementierung sollte darauf geachtet werden, dass beide Autos, so weit wir möglich, den physikalischen Gesetzen unterliegen. Dies bedeutet, dass z.B. die Fahrwiderstände wie Luftwiderstand, Rollwiderstand usw. beachtet werden müssen. Ebenfalls sollten beide Autos durch eine physikalische Spezifikation, wie z.B. das Gewicht, definiert werden. Beide Autos sollten hierbei der gleichen physikalische Spezifikation unterliegen, um keinem der beiden Autos einen Vorteil zu bieten.
+
 
 \begin{figure}
 	\centering
@@ -179,18 +185,18 @@ Auto B und Auto A haben die gleichen physikalischen Eigenschaften. Die Simulatio
 	\label{fig:problem}
 \end{figure}
 
-\section{GUI}
+\section{Implementierung}
 
-\begin{figure}
-	\centering
-	\includegraphics[width=0.9\linewidth]{img/practical/inaction}
-	\caption{Die GUI des Regelung-Programs}
-	\label{fig:inaction}
-\end{figure}
+Dieses Kapitel dient 
 
-In Abbildung \ref{fig:inaction} ist die GUI des Programms zu sehen. In dem grünen Kasten befindet sich die Ausgangs Fuzzy-Menge die an das Defuzzifizierungsinterface gegeben wird. Die Kästchen Lila und Gelb enthalten jeweils die momentanen Daten von Auto A und B. Für Auto B kann man mit dem Slider die Antriebskraft des vorderen Autos bestimmen. Das blaue Kästchen enthält den momentanen Abstand zwischen den beiden Autos in Metern. Die Tabs in dem schwarzen Kästchen zeigen Echtzeit Informationen über die Simulation. So wird ständig die Position, die Geschwindigkeit, die Beschleunigung und die Antriebskraft geplottet (rot = Auto A und  orange = Auto B).
+\subsection{Funktionale Programmiersprachen}
 
-\section{Konfiguration}
+
+
+Für die Implementierung wird die Sprache \textbf{Scala} verwendet. Folgende Klassen werden verwendet.
+\subsection{Modell des Autos}
+
+\subsection{Konfiguration}
 
 Mögliche Konfigurationen sind:
 
@@ -200,28 +206,6 @@ Mögliche Konfigurationen sind:
 	\item Erstellung der linguistischen Regeln
 	\item Wahl der Defuzzifizierungsmethode
 \end{itemize}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{img/practical/config}
-	\caption{Konfugrations Übersicht}
-	\label{fig:config}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{img/practical/mf}
-	\caption{Partitionierung der Fuzzy-Mengen}
-	\label{fig:mf}
-\end{figure}
-
-\begin{figure}
-	\centering
-	\includegraphics[width=0.7\linewidth]{img/practical/rules}
-	\caption{Bestimmung der Linguistischen Regeln}
-	\label{fig:rules}
-\end{figure}
-
 Es wurden folgende Voreinstellungen für die Regelung gemacht:
 
 \paragraph{Wertebreiche}
@@ -274,31 +258,14 @@ IF Distance = isVeryClose AND Speed = isExtreme THEN Force = fullBrake
 
 \end{lstlisting}
 
+\subsection{Fuzzy Controller}
+
+\subsection{Grafische Oberfläche}
 
 
+\section{Fazit}
 
-
-\section{Implementierung}
-
-Für die Implementierung wird die Sprache \textbf{Scala} verwendet. Folgende Klassen werden verwendet.
-
-\paragraph{Car.scala}
-
-Enthält das physikalische Modell eines Autos.
-
-\paragraph{FuzzyCarController.scala}
-
-Implementierung eines Fuzzy-Controllers nach Mamdami Ansatz.
-
-\paragraph{FuzzyConfig.scala}
-
-Enthält die Klassen: FuzzyTerm.scala, FuzzyRule.scala, FuzzyDefuzzyFunc.scala, FuzzyValueConnector.scala
-
-\paragraph{MembershipFunctions.scala}
-
-Enthält Funktionen wie die Dreiecksfunktion
-
-\section{Probleme}
+\subsection{Probleme}
 
 Leider ist dem Team zu spät aufgefallen, dass es sinnvoll gewesen wäre eine Ableitung des Abstands in die Regelung mit einzubringen. Die gesamte Regelung erscheint nun ein wenig Träge.
 
