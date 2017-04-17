@@ -25,6 +25,9 @@ class Car extends Drivable{
   val windDragCoefficient: Double = 0.67
   // m^2
   val crossSectionalArea: Double = 1.86
+  // N
+  val maxBrake: Double = 8000;
+  val maxAcc: Double = 3000;
 
   // m/s^2
   var acceleration: Double = 0
@@ -54,6 +57,14 @@ class Car extends Drivable{
     // Steigungswiederstand
     antiForce += (mass * Physics.gravity * Math.sin(0))
 
+    // Cap acceleration
+    if(engineForce > maxAcc)
+      engineForce = maxAcc
+
+    // Cap brake
+    if(engineForce < maxBrake)
+      engineForce = maxBrake
+
     // Reducuce AntiForce from EngineForce
     // Get actual acceleration
     acceleration = (engineForce - antiForce) / mass
@@ -66,7 +77,7 @@ class Car extends Drivable{
       speed = 0;
     }
 
-    // Calculat new Posistion
+    // Calculate new Posistion
     var posDelta = ((0.5 * acceleration * sampleTime * sampleTime) + speed * sampleTime)
     if(posDelta >= 0) {
       position += posDelta

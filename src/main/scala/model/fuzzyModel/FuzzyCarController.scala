@@ -18,7 +18,6 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
     controlledCar.tick()
     chasedCar.tick()
 
-
     // Measure Input Values
     var distance = chasedCar.position - controlledCar.position
     var speed = controlledCar.speed
