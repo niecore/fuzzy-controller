@@ -196,7 +196,7 @@ Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem al
 
 Die Modelle der beiden Autos werden in der Klasse \enquote{Car} realisiert. Jedes erstellte Auto hat ein vorgegebenes Gewicht in $kg$, ein Strömungswiderstandskoeffizient (dimensionslos) sowie eine gegebene Fläche der projizierte Stirnfläche in $m^2$. Ebenfalls wird eine maximale Brems bzw. Beschleunigungskraft festgelegt. Wir haben für unser Modell diese Werte von realen Autos übernommen und uns auf die Werte aus Tabelle \ref{table:car} festgelegt.
 
-Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position relativ zum Null Punkt, die aktuelle Geschwindigkeit in $m/s$ sowie  die aktuelle Beschleunigung in $m/s^2$ dokumentiert. Der Nutzer der Klasse hat die Möglichkeit die Brems bzw. Beschleinigungskraft in $N$ für das Auto über ein Interface zu setzen.
+Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position relativ zum Null Punkt in $m$, die aktuelle Geschwindigkeit in $m/s$ sowie  die aktuelle Beschleunigung in $m/s^2$ dokumentiert. Der Nutzer der Klasse hat die Möglichkeit die Brems bzw. Antriebskraft in $N$ für das Auto über ein Interface zu setzen.
 
 % Please add the following required packages to your document preamble:
 % \usepackage{booktabs}
@@ -204,18 +204,63 @@ Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position 
 	\centering
 	\caption{Phssikalische Spezifikation der Autos}
 	\label{table:car}
-	\begin{tabular}{@{}lll@{}}
+	\begin{tabular}{@{}llll@{}}
 		\toprule
-		Eigenschaft                     & Wert & Einheit             \\ \midrule
-		Gewicht                         & 1540 & kG                  \\
-		Strömungswiderstandskoeffizient & 0.67 & -                   \\
-		Projizierte Stirnfläche         & 1.86 & m\textasciicircum 2 \\ 
-		Bremskraft                      & 8000 & N                  \\
-		Beschleunigungskraft			& 3000 & N                   \\\bottomrule
+		Eigenschaft                     & Wert & Einheit 	& Bezeichner            \\ \midrule
+		Gewicht                         & 1540 & $kG$ 		& $m_{Fzg}$                 \\
+		Strömungswiderstandskoeffizient & 0.67 & -          & $cw$         \\
+		Projizierte Stirnfläche         & 1.86 & $m^2$ 		& $A$\\ 
+		Maximale Bremskraft             & 8000 & $N$        & $\overline{F}_{max}$         \\
+		Maximale Antriebskraft			& 3000 & $N$        & $ {F}_{max} $          \\ \bottomrule
 	\end{tabular}
 \end{table}
 
+\subsubsection{Bestimmung der Beschleunigung}
 
+Um die gesetzte Brems bzw. Antriebskraft, unter Berücksichtigung der physikalischen Gesetze, in eine Beschleunigung umzurechnen, betrachten wir zunächst die Fahrwiderstände die ein Fahrzeug überwinden muss. Als Fahrwiderstand $F_{FW}$ wird die Summe der Widerstände bezeichnet, die ein Fahrzeug mit Hilfe einer Antriebskraft überwinden muss, um das Fahrzeug zu bewegen. Dazu gehört der Luftwiderstand $F_{Luft}$, der Rollwiderstand $F_{Roll}$, der Steigungswiderstand $F_{Steig}$ sowie der Beschleunigungswiderstand $F_{B}$.
+
+\begin{equation}
+F_{FW} = F_{Luft} + F_{Roll} + F_{Steig} + F_{B}
+\end{equation}
+
+
+\subsubsection{Bestimmung der Position}
+
+Die Position eines jeden Autos lässt sich über die schrittweise numerische Integration der Beschleunigung errechnen. Durch Ableitung lässt sich mit der Position (siehe Gl. 1) die Geschwindigkeit (siehe Gl. 2) berechnen. Durch ein weiteres Ableiten erhält man die Beschleunigung (siehe Gl. 3). Da unser System zunächst nur die Beschleunigung bereitsteht, lässt sich durch die Integration auf die Geschwindigkeit (siehe Gl. 4) sowie in einem
+weiteren Schritt auf die Position schließen (siehe Gl. 5). 
+
+\begin{equation}
+	s(t) = \text{Position zur Zeit t}
+\end{equation}
+
+\begin{equation}
+	\dot{s}(t) = v(t) = \text{Geschwindigkeit zur Zeit t}
+\end{equation}
+
+\begin{equation}
+	\ddot{s}(t) = \dot{v}(t) = a(t) = \text{Beschleinung zur Zeit t}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+\dot{v}(t) &= a(t) \\
+\int_{0}^{t} \dot{v}(t) dt &= \int_{0}^{t} a(t) dt \\
+v(t)\Big|_0^t &= a(t) \cdot t \Big|_0^t \\
+v(t) - v(0) &= a(t) \cdot t - a(0) \cdot 0\\
+v(t) &= a(t) \cdot t + v(0) \\
+\end{aligned}
+\end{equation}
+
+\begin{equation}
+\begin{aligned}
+	\dot{s}(t) &= v(t) \\
+	\int_{0}^{t} \dot{s}(t) dt &= \int_{0}^{t} v(t) dt \\
+	\int_{0}^{t} \dot{s}(t) dt &= \int_{0}^{t} a(t) \cdot t + v(0) dt \\
+	s(t)\Big|_0^t &= 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t \Big|_0^t \\
+	s(t) - s(0) &= 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t \\
+	s(t) &= 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t + s(0) \\
+\end{aligned}
+\end{equation}
 
 \subsection{Konfiguration}
 
