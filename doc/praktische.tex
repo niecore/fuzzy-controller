@@ -173,9 +173,9 @@
 
 \section{Problemstellung}
 
-Die gestellte Aufgabe zur praktischen Ausarbeitung kommt aus dem Themengebiet des autonomen Fahrens. Es soll ein Fuzzy Regler eingesetzt werden um ein Auto so zu steuern, dass es einem anderen, durch den Menschen gesteuerten, Auto folgt.  Hierbei ist zu beachten, dass das hier bei nur die Geschwindigkeit bzw. Bewegung in einer Achse kontrolliert wird. Das bedeutet, dass nur das Gas- sowie das Bremspedal jedoch nicht das Lenkrad geregelt werden muss. Außerdem gehen wir davon aus, dass es sich bei dem gesteuerten Auto um ein Auto mit Automatikgetriebe handelt und somit das Kuppeln sowie das Schalten der Gänge ebenfalls irrelevant ist. 
+Die gestellte Aufgabe zur praktischen Ausarbeitung kommt aus dem Themengebiet des autonomen Fahrens. Es soll ein Fuzzy Regler eingesetzt werden um ein Fahrzeug so zu steuern, dass es einem anderen, durch den Menschen gesteuerten, Fahrzeug folgt.  Hierbei ist zu beachten, dass das hier bei nur die Geschwindigkeit bzw. Bewegung in einer Achse kontrolliert wird. Das bedeutet, dass nur das Gas- sowie das Bremspedal jedoch nicht das Lenkrad geregelt werden muss. Außerdem gehen wir davon aus, dass es sich bei dem gesteuerten Fahrzeug um ein Fahrzeug mit Automatikgetriebe handelt und somit das Kuppeln sowie das Schalten der Gänge ebenfalls irrelevant ist. 
 
-Bei der Implementierung sollte darauf geachtet werden, dass beide Autos, so weit wir möglich, den physikalischen Gesetzen unterliegen. Dies bedeutet, dass z.B. die Fahrwiderstände wie Luftwiderstand, Rollwiderstand usw. beachtet werden müssen. Ebenfalls sollten beide Autos durch eine physikalische Spezifikation, wie z.B. das Gewicht, definiert werden. Beide Autos sollten hierbei der gleichen physikalische Spezifikation unterliegen, um keinem der beiden Autos einen Vorteil zu bieten.
+Bei der Implementierung sollte darauf geachtet werden, dass beide Fahrzeuge, so weit wir möglich, den physikalischen Gesetzen unterliegen. Dies bedeutet, dass z.B. die Fahrwiderstände wie Luftwiderstand, Rollwiderstand usw. beachtet werden müssen. Ebenfalls sollten beide Fahrzeuge durch eine physikalische Spezifikation, wie z.B. das Gewicht, definiert werden. Beide Fahrzeuge sollten hierbei der gleichen physikalische Spezifikation unterliegen, um keines der beiden Fahrzeuge einen Vorteil zu bieten.
 
 \begin{figure}
 	\centering
@@ -192,9 +192,9 @@ Dieses Kapitel dient
 
 Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem alles Programme lediglich aus Funktionen bestehen. Hierbei können neue Funktionen aus bereits bestehenden Funktionen zusammengesetzt werden. Ebenfalls werden Funktionen in der funktionalen Programmierung als Wert angesehen. Dies erlaubt es Funktionen als Parameter oder Rückgabe zu verwenden, dies nennt man \enquote{Funktion höhrer Ordnung}. In sogenannten \enquote{reinen} funktionalen Programmiersprachen gibt es keine Variablen womit Seiteneffekte vollkommen ausgeschlossen werden. Für die Implementierung wird die Sprache Scala\footnote{https://www.scala-lang.org/} verwendet. Scala ist eine JVM-Sprache die funktionale Programmierung und Objektorientierte Programmierung verbindet. Wir haben diese Sprache gewählt, da wir einerseits unsere Kenntnisse in der Sprache durch das Projekt erweitern wollten aber auch anderseits der Meinung waren, dass sich eine Fuzzy Regelung einfacher mithilfe von Funktionen höherer Ordnung ausdrücken lassen.
 
-\subsection{Modell des Autos}
+\subsection{Modell des Fahrzeugs}
 
-Die Modelle der beiden Autos werden in der Klasse \enquote{Car} realisiert. Jedes erstellte Auto hat ein vorgegebenes Gewicht in $kg$, ein Strömungswiderstandskoeffizient (dimensionslos) sowie eine gegebene Fläche der projizierte Stirnfläche in $m^2$. Ebenfalls wird eine maximale Brems bzw. Beschleunigungskraft festgelegt. Wir haben für unser Modell diese Werte von realen Autos übernommen und uns auf die Werte aus Tabelle \ref{table:car} festgelegt.
+Die Modelle der beiden Fahrzeuge werden in der Klasse \enquote{Car} realisiert. Jedes erstellte Fahrzeug hat ein vorgegebenes Gewicht in $kg$, ein Strömungswiderstandskoeffizient (dimensionslos) sowie eine gegebene Fläche der projizierte Stirnfläche in $m^2$. Ebenfalls wird eine maximale Brems bzw. Antriebskraft festgelegt. Wir haben für unser Modell diese Werte von realen Fahrzeugen übernommen und uns auf die Werte aus Tabelle \ref{table:car} festgelegt.
 
 Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position relativ zum Null Punkt in $m$, die aktuelle Geschwindigkeit in $m/s$ sowie  die aktuelle Beschleunigung in $m/s^2$ dokumentiert. Der Nutzer der Klasse hat die Möglichkeit die Brems bzw. Antriebskraft in $N$ für das Auto über ein Interface zu setzen.
 
@@ -208,10 +208,12 @@ Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position 
 		\toprule
 		Eigenschaft                     & Wert & Einheit 	& Bezeichner            \\ \midrule
 		Gewicht                         & 1540 & $kG$ 		& $m_{Fzg}$                 \\
+		Zuladung                        & 0 & $kG$ 			& $m_{Zu}$                 \\
 		Strömungswiderstandskoeffizient & 0.67 & -          & $cw$         \\
 		Projizierte Stirnfläche         & 1.86 & $m^2$ 		& $A$\\ 
 		Maximale Bremskraft             & 8000 & $N$        & $\overline{F}_{max}$         \\
-		Maximale Antriebskraft			& 3000 & $N$        & $ {F}_{max} $          \\ \bottomrule
+		Maximale Antriebskraft			& 3000 & $N$        & $ {F}_{max} $          \\ 
+		Massefaktor						& 1    & -        	& $ {e}_{i} $          \\ \bottomrule
 	\end{tabular}
 \end{table}
 
@@ -219,15 +221,80 @@ Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position 
 
 Um die gesetzte Brems bzw. Antriebskraft, unter Berücksichtigung der physikalischen Gesetze, in eine Beschleunigung umzurechnen, betrachten wir zunächst die Fahrwiderstände die ein Fahrzeug überwinden muss. Als Fahrwiderstand $F_{FW}$ wird die Summe der Widerstände bezeichnet, die ein Fahrzeug mit Hilfe einer Antriebskraft überwinden muss, um das Fahrzeug zu bewegen. Dazu gehört der Luftwiderstand $F_{Luft}$, der Rollwiderstand $F_{Roll}$, der Steigungswiderstand $F_{Steig}$ sowie der Beschleunigungswiderstand $F_{B}$.
 
+\paragraph{Luftwiderstand}
+
+Der Luftwiderstand ist maßgeblich für die Höchstgeschwindigkeit eines Fahrzeugs. Er hängt von der aerodynamischen Form des Fahrzeuges ab und steigt mit der Geschwindigkeit ins Quadrat. Außerdem spielt die momentane Luftdichte $p_{Luft}$ in $kg/m^3$ eine Rolle für den Luftwiderstand. Diese ist abhängig von der Höhe in der Atmosphäre sowie der Temperatur der Atmosphäre.  Wir haben für diese Umgebungsvariable einen Wert von $1,2$ gewählt, dies Entspricht der Luftdichte bei einer Temperatur von $20^\circ\text{C}$ auf Höhe des Meeresspiegels.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/practical/Luftwiderstand}
+	\caption{Prinzipskizze zum Luftwiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Luftwiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\label{fig:luftwiderstand}
+\end{figure}
+
+\begin{equation}
+F_{Luft} = cw \cdot A \cdot \frac{p_{Luft} \cdot v_{Fzg}^2}{2}
+\end{equation}
+
+\paragraph{Rollwiderstand}
+
+Der Rollwiderstand beschreibt die nötige Arbeit um einen Reifen auf einer Kontaktfläche zu rollen. Durch die Fahrzeugmaße und das elastische Material des Reifens sowie dem Boden werden diese zusammengedrückt und bilden keine optimale Kreisform mehr. Diese Eigenschaft wird durch den Rollwiderstandskoeffizient $f_{Roll}$ abstrahiert. Wir haben für diese Umgebungsvariable einen Wert von $0,01$ gewählt was einem Autoreifen auf einem Asphaltboden entspricht. In die Formel geht außerdem die Erdbeschleunigung $g$ sowie der Steigungswinkel  $a$ eine Rolle. Wenn der Steigungswinkel steigt oder sinkt, also $ |a|  \gg 0$, konvergiert der Rollwiderstand gegen $0$. 
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/practical/Rollwiderstand}
+	\caption{Prinzipskizze zum Rollwiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Rollwiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\label{fig:Rollwiderstand}
+\end{figure}
+
+\begin{equation}
+F_{Roll} = f_{Roll} \cdot (m_{Fzg} + m_{Zu}) \cdot g \cdot cos(a)
+\end{equation}
+
+
+\paragraph{Steigungswiderstand}
+
+Der Steigungswiderstand beschreibt die nötige Kraft die benötigt wird um die Maße des Fahrzeugs über die Steigung zu bewegen. Falls die Steigung negativ ist, wird der Steigungswiderstand negativ und beeinflusst somit das Fahrzeug positiv. Der Steigungswiderstand spielt in unserer Aufgabenstellung z.Z. keine Rolle, da von einer ebenen Strecke ausgegangen werden soll. Dennoch wurde dieser im Sinne der Vollständigkeit implementiert und hier aufgeführt.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/practical/Steigungswiderstand}
+	\caption{Prinzipskizze zum Steigungswiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Steigungswiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\label{fig:Steigungswiderstand}
+\end{figure}
+
+\begin{equation}
+F_{Steig} = (m_{Fzg} + m_{Zu}) \cdot g \cdot sin(a)
+\end{equation}
+
+\paragraph{Beschleunigungswiderstand}
+
+Der Beschleunigungswiderstand beschreibt die nötige Kraft die benötigt wird um die Beschleunigung eines Fahrzeugs zu ändern. Dieser Widerstand entsteht durch die Trägheit des Fahrzeugs. Der Massefaktor $e_i$ (>=1) fasst den translatorischer Anteil, also Maße die sich in Fahrtrichtung bewegt sowie den rotatorischer Anteil, also alle rotierende Teile im Antriebsstrang (Motor, Kurbelwelle, Kupplung, Räder) zusammen. Der Massefaktor ist somit auch stark abhängig vom gewählten Gang des Fahrzeugs. In unserem Modell ist der Massefaktor auf 1 gesetzt.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/practical/Beschleunigungswiderstand}
+	\caption{Prinzipskizze zum Beschleunigungswiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Beschleunigungswiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\label{fig:Beschleunigungswiderstand}
+\end{figure}
+
+\begin{equation}
+ F_{B}=(e_{i}\cdot m_{Fzg} +m_{Zu}) \cdot a
+\end{equation}
+
 \begin{equation}
 F_{FW} = F_{Luft} + F_{Roll} + F_{Steig} + F_{B}
 \end{equation}
 
+Um nun die tatsächliche Kraft zu erhalten müssen die Fahrwiderstände von der Antriebskraft subtrahiert werden. Dieser Kraft definiert als $kg * m/s^2$ kann nun in die aktuelle Beschleunigung umgerechnet werden.
+
+\begin{equation}
+a = \frac{F - F_{FW}}{m_{Fzg} + m_{Zu}}
+\end{equation}
 
 \subsubsection{Bestimmung der Position}
 
-Die Position eines jeden Autos lässt sich über die schrittweise numerische Integration der Beschleunigung errechnen. Durch Ableitung lässt sich mit der Position (siehe Gl. 1) die Geschwindigkeit (siehe Gl. 2) berechnen. Durch ein weiteres Ableiten erhält man die Beschleunigung (siehe Gl. 3). Da unser System zunächst nur die Beschleunigung bereitsteht, lässt sich durch die Integration auf die Geschwindigkeit (siehe Gl. 4) sowie in einem
-weiteren Schritt auf die Position schließen (siehe Gl. 5). 
+Die Position eines jeden Fahrzeugs lässt sich über die Integration der Beschleunigung errechnen. Durch Ableitung der Position (siehe Gl. 1) ergibt sich die Geschwindigkeit (siehe Gl. 2). Durch ein weiteres Ableiten erhält man die Beschleunigung (siehe Gl. 3). Da unser System zunächst nur die Beschleunigung bereitsteht, lässt sich durch die Integration auf die Geschwindigkeit (siehe Gl. 4) sowie in einem weiteren Schritt auf die Position schließen (siehe Gl. 5).
 
 \begin{equation}
 	s(t) = \text{Position zur Zeit t}
