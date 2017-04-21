@@ -40,6 +40,48 @@
 {\newline} % Space after thm head: \newline = linebreak
 {} % Thm head spec
 
+\def\code#1{\texttt{#1}}
+% "define" Scala
+\lstdefinelanguage{scala}{
+	morekeywords={abstract,case,catch,class,def,%
+		do,else,extends,false,final,finally,%
+		for,if,implicit,import,match,mixin,%
+		new,null,object,override,package,%
+		private,protected,requires,return,sealed,%
+		super,this,throw,trait,true,try,%
+		type,val,var,while,with,yield},
+	otherkeywords={=>,<-,<\%,<:,>:,\#,@},
+	sensitive=true,
+	morecomment=[l]{//},
+	morecomment=[n]{/*}{*/},
+	morestring=[b]",
+	morestring=[b]',
+	morestring=[b]"""
+}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstdefinestyle{myScalastyle}{
+	frame=tb,
+	language=scala,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=left,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	frame=single,
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=2,
+}
+
 
 \theoremstyle{Umgebung}
 
@@ -194,9 +236,16 @@ Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem al
 
 \subsection{Modell des Fahrzeugs}
 
-Die Modelle der beiden Fahrzeuge werden in der Klasse \enquote{Car} realisiert. Jedes erstellte Fahrzeug hat ein vorgegebenes Gewicht in $kg$, ein Strömungswiderstandskoeffizient (dimensionslos) sowie eine gegebene Fläche der projizierte Stirnfläche in $m^2$. Ebenfalls wird eine maximale Brems bzw. Antriebskraft festgelegt. Wir haben für unser Modell diese Werte von realen Fahrzeugen übernommen und uns auf die Werte aus Tabelle \ref{table:car} festgelegt.
+Die Modelle der beiden Fahrzeuge werden in der Klasse \enquote{Car} realisiert (siehe Abbildung \ref{fig:car}). Jedes erstellte Fahrzeug hat ein vorgegebenes Gewicht in $kg$, ein Strömungswiderstandskoeffizient (dimensionslos) sowie eine gegebene Fläche der projizierte Stirnfläche in $m^2$. Ebenfalls wird eine maximale Brems bzw. Antriebskraft festgelegt. Wir haben für unser Modell diese Werte von realen Fahrzeugen übernommen und uns auf die Werte aus Tabelle \ref{table:car} festgelegt.
 
 Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position relativ zum Null Punkt in $m$, die aktuelle Geschwindigkeit in $m/s$ sowie  die aktuelle Beschleunigung in $m/s^2$ dokumentiert. Der Nutzer der Klasse hat die Möglichkeit die Brems bzw. Antriebskraft in $N$ für das Auto über ein Interface zu setzen.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/practical/car-diagram}
+	\caption{UML der Klasse Auto und deren Nachbarklassen.}
+	\label{fig:car}
+\end{figure}
 
 % Please add the following required packages to your document preamble:
 % \usepackage{booktabs}
@@ -206,14 +255,14 @@ Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position 
 	\label{table:car}
 	\begin{tabular}{@{}llll@{}}
 		\toprule
-		Eigenschaft                     & Wert & Einheit 	& Bezeichner            \\ \midrule
-		Gewicht                         & 1540 & $kG$ 		& $m_{Fzg}$                 \\
-		Zuladung                        & 0 & $kG$ 			& $m_{Zu}$                 \\
-		Strömungswiderstandskoeffizient & 0.67 & -          & $cw$         \\
-		Projizierte Stirnfläche         & 1.86 & $m^2$ 		& $A$\\ 
-		Maximale Bremskraft             & 8000 & $N$        & $\overline{F}_{max}$         \\
-		Maximale Antriebskraft			& 3000 & $N$        & $ {F}_{max} $          \\ 
-		Massefaktor						& 1    & -        	& $ {e}_{i} $          \\ \bottomrule
+		Eigenschaft                     & Wert & Einheit & Bezeichner           \\ \midrule
+		Gewicht                         & 1540 & $kG$    & $m_{Fzg}$            \\
+		Zuladung                        & 0    & $kG$    & $m_{Zu}$             \\
+		Strömungswiderstandskoeffizient & 0.67 & -       & $cw$                 \\
+		Projizierte Stirnfläche         & 1.86 & $m^2$   & $A$                  \\
+		Maximale Bremskraft             & 8000 & $N$     & $\overline{F}_{max}$ \\
+		Maximale Antriebskraft          & 3000 & $N$     & $ {F}_{max} $        \\
+		Massefaktor                     & 1    & -       & $ {e}_{i} $          \\ \bottomrule
 	\end{tabular}
 \end{table}
 
@@ -309,25 +358,84 @@ Die Position eines jeden Fahrzeugs lässt sich über die Integration der Beschle
 \end{equation}
 
 \begin{equation}
-\begin{aligned}
-\dot{v}(t) &= a(t) \\
-\int_{0}^{t} \dot{v}(t) dt &= \int_{0}^{t} a(t) dt \\
-v(t)\Big|_0^t &= a(t) \cdot t \Big|_0^t \\
-v(t) - v(0) &= a(t) \cdot t - a(0) \cdot 0\\
-v(t) &= a(t) \cdot t + v(0) \\
-\end{aligned}
+	\begin{aligned}
+		\dot{v}(t)                 & = a(t)                        \\
+		\int_{0}^{t} \dot{v}(t) dt & = \int_{0}^{t} a(t) dt        \\
+		v(t)\Big|_0^t              & = a(t) \cdot t \Big|_0^t      \\
+		v(t) - v(0)                & = a(t) \cdot t - a(0) \cdot 0 \\
+		v(t)                       & = a(t) \cdot t + v(0)
+	\end{aligned}
 \end{equation}
 
 \begin{equation}
 \begin{aligned}
-	\dot{s}(t) &= v(t) \\
-	\int_{0}^{t} \dot{s}(t) dt &= \int_{0}^{t} v(t) dt \\
-	\int_{0}^{t} \dot{s}(t) dt &= \int_{0}^{t} a(t) \cdot t + v(0) dt \\
-	s(t)\Big|_0^t &= 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t \Big|_0^t \\
-	s(t) - s(0) &= 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t \\
-	s(t) &= 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t + s(0) \\
+	\dot{s}(t)                 & = v(t)                                              \\
+	\int_{0}^{t} \dot{s}(t) dt & = \int_{0}^{t} v(t) dt                              \\
+	\int_{0}^{t} \dot{s}(t) dt & = \int_{0}^{t} a(t) \cdot t + v(0) dt               \\
+	s(t)\Big|_0^t              & = 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t \Big|_0^t \\
+	s(t) - s(0)                & = 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t           \\
+	s(t)                       & = 0,5 \cdot a(t) \cdot t^2 + v(t) \cdot t + s(0)
 \end{aligned}
 \end{equation}
+
+\paragraph{Numerische Integration}
+
+Die numerische Integration in unserem System wird durch eine kontinuierliche, schrittweise Integration umgesetzt. Hierfür muss in zyklischen Abständen die Beschleunigung gemessen werden und dann die draus resultierende Geschwindigkeit und Position berechnet und aktualisiert werden. Wichtig ist hierbei, dass die Zeit zwischen diesen zyklischen Aufrufen festgehalten wird.
+
+Im Code Beispiel (siehe Listing \ref{lst:integration}) wird in der Funktion \code{tick()} die numerische Integration implementiert. Die Variable \code{past} enthält einen Zeitstempel der gespeichert wurde, als die Funktion das letzte mal aufgerufen wurde. Wichtig ist hierbei, dass der Sichtbarkeitsbereich der Variablen außerhalb der Funktion liegt. So kann bei jedem Aufruf die vergangene Zeit zwischen dem aktuellen und vorherigen Aufruf bestimmt werden. Nach Abschluss der Berechnung wird Zeitstempel überschrieben.
+
+\begin{lstlisting}[style=myScalastyle, caption=Numerische Integration, label=lst:integration]]
+	var acceleration: Double = 0
+	var speed: Double = 0
+	var position: Double = 0
+	var past: Long = System.currentTimeMillis()
+
+	def tick(): Unit = {
+		// Bestimmen der aktuellen Zeit
+		val now = System.currentTimeMillis()
+		// Berechnung der vergangenen Zeit in Sekunden
+		val t: Double = (now - past) / 1000.0 
+		
+		// Erste Schritt der Integration
+		acceleration = (engineForce - antiForce) / mass
+		// Zweiter Schritt der Integration
+		speed += (acceleration * t)
+		// Dritter Schritt der Integration
+		position += ((0.5 * acceleration * t * t) + speed * t)
+
+		// Speichern der Aufrufszeit
+		past = now;
+	}
+\end{lstlisting}
+
+\subsection{Modell der Wissensbasis}
+
+Die Wissensbasis besteht aus der Regelbasis und der Datenbasis. Alle Wertebereiche für die Eingangsgrößen und Stellgrößen sowie die dazugehörigen linguistischen Termen und dazu assoziierten Fuzzy-Mengen gehören zu der Datenbasis. Die Regelbasis bestehtaus den linguistischen Kontrollregeln. Die Wissensbasis soll durch den Benutzer zur Laufzeit des konfigurierbar sein. Aus diesem Grund wurden alle nötigen Parameter in ein Konfigurationsobjekt gebettet das zur jeder Zeit vom Fuzzy Regler geladen werden kann. Um das Verständnis zu verbessern werden nun die einzelnen Komponenten der Wissensbasis und deren dazugehörigen Modellierungen vorgestellt.
+
+\paragraph{Eingangs- Ausgangsgrößen}
+
+Für jede messbare Eingangsgröße und jede Ausgangsgröße muss ein Wertebereich und ein Bezeichner festgelegt werden, sodass andere Programmteile diese wieder erkennen können. Diese Größen nennen wir \code{FuzzyValueConnector}.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\linewidth]{img/practical/valueconnector}
+	\caption{Modellierung der Wissensbasis}
+	\label{fig:valueconnector}
+\end{figure}
+
+\paragraph{Fuzzy-Menge und Linguistischer Term}
+
+Da ein linguistischer Term immer nur einer Fuzzy-Menge zugeordnet sein sollte, wurden diese Elemente in unserem Model in der Klasse \code{FuzzyTerm} implementiert. Die eigentliche Zugehörigkeitsfunktion wird durch die Funktion höherer Ordnung \code{(Double => FuzzyBool)} ausgedrückt. Wobei \code{FuzzyBool} nur ein Fließkommazahl in den Grenzen $\left[0,1\right]$ ist.
+
+\paragraph{Fuzzy-Regeln}
+
+Die Regelbasis in Form von linguistischen "Wenn - Dann - Regeln" wird durch die Klasse \code{FuzzyRule} modelliert. Jede Regel wird durch ihren Namen identifiziert und enthält eine List von \code{FuzzyTerm} die die Eingangsgrößen darstellen. Die Verknüpfung dieser Eingangsgrößen wird durch eine Liste von Operatoren modelliert. Außerdem wird eine Ausgangsgröße, ebenfalls in Form eines \code{FuzzyTerm} festgelegt.
+
+\paragraph{Defuzzyfizierungs-Methoden}
+
+Die Aufgabe der Defuzzyfizierungs-Methoden ist es aus der Ausgangsfuzzymenge einen Stellwert auszuwählen. In unserer Modellierung arbeitet die Defuzzyfizierungs-Methoden mit einer Liste aller im Wertebereich enthaltenen Werte auf die die kombinierten Zugehörigkeitsfunktion aller Regeln bereits angewendet wurden. Sie liefert dann einen Stellwert in diesem Wertebereich zurück. Die Defuzzyfizierungs-Methoden wird durch die Funktion höherer Ordnung \code{List[Double] => Int)} beschrieben und durch einen Namen identifiziert und in der Klasse \code{FuzzyDefuzzyficationFunc} zusammengefasst.
+
+
 
 \subsection{Konfiguration}
 

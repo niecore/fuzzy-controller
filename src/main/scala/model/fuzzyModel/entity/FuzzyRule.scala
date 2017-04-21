@@ -5,6 +5,7 @@ package model.fuzzyModel.entity
   */
 class FuzzyRule(val name: String,
                 val inputs: List[FuzzyTerm],
+                val op: List[String],
                 val outputs: FuzzyTerm) {
 
   override def toString = {

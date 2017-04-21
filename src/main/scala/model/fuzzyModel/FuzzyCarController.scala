@@ -53,8 +53,6 @@ class FuzzyCarController(logic: FuzzyConfig, controlledCar: Drivable, chasedCar:
           f => f.value
         ).toList
 
-
-
         // defuzzyfication
         var setpoint = (e._1.minVal to e._1.maxVal)(logic.defuzzy.func.apply(output))
 
