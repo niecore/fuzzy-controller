@@ -183,7 +183,7 @@ class MainPresenter extends Initializable {
   }
 
   def onPlay(event: ActionEvent): Unit = {
-    val loader = new FXMLLoader(getClass.getResource("../configEditor/configEditor.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("/configEditor.fxml"))
     val stage = new Stage()
     stage.setScene(new Scene(loader.load()))
     stage.initModality(Modality.WINDOW_MODAL);
