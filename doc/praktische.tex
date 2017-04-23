@@ -220,14 +220,14 @@
 % Einleitung
 % ----------------------------------------------------------------------------------------------------------
 \begin{abstract} 
-	Die vorliegende Hausarbeit bearbeitet eine Problemstellung des autonomen Fahrens. Konkret soll ein durch einen Fuzzy-Regler gesteuertes Autos einem anderen Auto im optimalen Abstand folgen. Zunächst werden physikalischen Bedingungen für die beiden Autos erläutert. Anschließen wird darauf eingegangen wie man mit Hilfe von numerischer Integration die tatsächliche Geschwindigkeit bzw. Bewegung eines Fahrzeugs simulieren kann. Der eigentlich Fuzzy-Regler wurde mithilfe von funktionaler Programmierung implementiert. Zuletzt wird die GUI sowie das Zusammenspiel zwischen den Modellen und der GUI vorgestellt.
+	Die vorliegende Hausarbeit bearbeitet eine Problemstellung des autonomen Fahrens. Konkret soll ein durch einen Fuzzy-Regler gesteuertes Autos einem anderen Auto im optimalen Abstand folgen. Zunächst werden die physikalischen Bedingungen für die beiden Autos erläutert. Anschließen wird darauf eingegangen wie man mit Hilfe von numerischer Integration die tatsächliche Geschwindigkeit bzw. Bewegung eines Fahrzeugs simulieren kann. Der eigentlich Fuzzy-Regler wurde mithilfe von funktionaler Programmierung implementiert. Zuletzt wird die GUI sowie das Zusammenspiel zwischen den Modellen und der GUI vorgestellt.
 
 \end{abstract} 
 \newpage
 
 \section{Problemstellung}
 
-Die gestellte Aufgabe zur praktischen Ausarbeitung kommt aus dem Themengebiet des autonomen Fahrens. Es soll ein Fuzzy Regler eingesetzt werden um ein Fahrzeug so zu steuern, dass es einem anderen, durch den Menschen gesteuerten, Fahrzeug folgt.  Hierbei ist zu beachten, dass das hier bei nur die Geschwindigkeit bzw. Bewegung in einer Achse kontrolliert wird. Das bedeutet, dass nur das Gas- sowie das Bremspedal jedoch nicht das Lenkrad geregelt werden muss. Außerdem gehen wir davon aus, dass es sich bei dem gesteuerten Fahrzeug um ein Fahrzeug mit Automatikgetriebe handelt und somit das Kuppeln sowie das Schalten der Gänge ebenfalls irrelevant ist. 
+Die gestellte Aufgabe zur praktischen Ausarbeitung kommt aus dem Themengebiet des autonomen Fahrens. Es soll ein Fuzzy-Regler eingesetzt werden um ein Fahrzeug so zu steuern, dass es einem anderen, durch den Menschen gesteuerten, Fahrzeug folgt.  Hierbei ist zu beachten, dass hier bei nur die Geschwindigkeit bzw. Bewegung in einer Achse kontrolliert wird. Das bedeutet, dass nur das Gas- sowie das Bremspedal jedoch nicht das Lenkrad geregelt werden muss. Außerdem gehen wir davon aus, dass es sich bei dem gesteuerten Fahrzeug um ein Fahrzeug mit Automatikgetriebe handelt und somit das Kuppeln sowie das Schalten der Gänge ebenfalls irrelevant ist. 
 
 Bei der Implementierung sollte darauf geachtet werden, dass beide Fahrzeuge, so weit wir möglich, den physikalischen Gesetzen unterliegen. Dies bedeutet, dass z.B. die Fahrwiderstände wie Luftwiderstand, Rollwiderstand usw. beachtet werden müssen. Ebenfalls sollten beide Fahrzeuge durch eine physikalische Spezifikation, wie z.B. das Gewicht, definiert werden. Beide Fahrzeuge sollten hierbei der gleichen physikalische Spezifikation unterliegen, um keines der beiden Fahrzeuge einen Vorteil zu bieten.
 
@@ -244,11 +244,11 @@ In diesem Kapitel wird eine Lösung für das gestellte Problem vorgestellt. Wir 
 
 \subsection{Funktionale Programmierung}
 
-Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem alles Programme lediglich aus Funktionen bestehen. Hierbei können neue Funktionen aus bereits bestehenden Funktionen zusammengesetzt werden. Ebenfalls werden Funktionen in der funktionalen Programmierung als Wert angesehen. Dies erlaubt es Funktionen als Parameter oder Rückgabe zu verwenden, dies nennt man \enquote{Funktion höhrer Ordnung}. In sogenannten \enquote{reinen} funktionalen Programmiersprachen gibt es keine Variablen womit Seiteneffekte vollkommen ausgeschlossen werden. Für die Implementierung wird die Sprache Scala\footnote{https://www.scala-lang.org/} verwendet. Scala ist eine JVM-Sprache die funktionale Programmierung und Objektorientierte Programmierung verbindet. Wir haben diese Sprache gewählt, da wir einerseits unsere Kenntnisse in der Sprache durch das Projekt erweitern wollten aber auch anderseits der Meinung waren, dass sich eine Fuzzy Regelung einfacher mithilfe von Funktionen höherer Ordnung ausdrücken lassen.
+Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem alle Programme lediglich aus Funktionen bestehen. Hierbei können neue Funktionen aus bereits bestehenden Funktionen zusammengesetzt werden. Ebenfalls werden Funktionen in der funktionalen Programmierung als Wert angesehen. Dies erlaubt es Funktionen als Parameter oder Rückgabe zu verwenden, dies nennt man \enquote{Funktion höhrer Ordnung}. In sogenannten \enquote{reinen} funktionalen Programmiersprachen gibt es keine Variablen womit Seiteneffekte vollkommen ausgeschlossen werden. Für unsere Implementierung wird die Sprache Scala\footnote{https://www.scala-lang.org/} verwendet. Scala ist eine JVM-Sprache die funktionale Programmierung und Objektorientierte Programmierung verbindet. Wir haben diese Sprache gewählt, da wir einerseits unsere Kenntnisse in der Sprache durch das Projekt erweitern wollten aber anderseits auch der Meinung waren, dass sich eine Fuzzy-Regelung einfacher mithilfe von Funktionen höherer Ordnung ausdrücken lässt.
 
 \subsubsection{Map, Reduce, Filter}
 
-Die drei Funktionen map, filter und fold sind essentiell um die funktionale Programmierung zu verstehen. \code{map} wendet eine Funktion auf jedes Element einer List an und kreiert somit eine neue Liste (siehe Abbildung \ref{fig:map}). Die Funktion \code{filter} entfernt genau die Element einer List, die eine mit einer Funktion verbunden ein boolesches \code{false} liefern (siehe Abbildung \ref{fig:filter}). Die Funktion \code{fold} oder auch \code{reduce} wendet eine Funktion mit zwei Parametern solange auf Paare der List an, bis nur noch ein Element in der Liste enthalten ist (siehe Abbildung \ref{fig:reduce}).
+Die drei Funktionen map, filter und fold sind essentiell um die funktionale Programmierung zu verstehen. \code{map} wendet eine Funktion auf jedes Element einer Liste an und kreiert somit eine neue Liste (siehe Abbildung \ref{fig:map}). Die Funktion \code{filter} entfernt genau die Element einer List, die eine mit einer Funktion verbunden ein boolesches \code{false} liefern (siehe Abbildung \ref{fig:filter}). Die Funktion \code{fold} oder auch \code{reduce} wendet eine Funktion mit zwei Parametern solange auf Paare der Liste an, bis nur noch ein Element in der Liste enthalten ist (siehe Abbildung \ref{fig:reduce}).
 
 \begin{figure}
 	\centering
@@ -275,7 +275,7 @@ Die drei Funktionen map, filter und fold sind essentiell um die funktionale Prog
 
 Die Modelle der beiden Fahrzeuge werden in der Klasse \enquote{Car} realisiert (siehe Abbildung \ref{fig:car}). Jedes erstellte Fahrzeug hat ein vorgegebenes Gewicht in $kg$, ein Strömungswiderstandskoeffizient (dimensionslos) sowie eine gegebene Fläche der projizierte Stirnfläche in $m^2$. Ebenfalls wird eine maximale Brems bzw. Antriebskraft festgelegt. Wir haben für unser Modell diese Werte von realen Fahrzeugen übernommen und uns auf die Werte aus Tabelle \ref{table:car} festgelegt.
 
-Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position relativ zum Null Punkt in $m$, die aktuelle Geschwindigkeit in $m/s$ sowie  die aktuelle Beschleunigung in $m/s^2$ dokumentiert. Der Nutzer der Klasse hat die Möglichkeit die Brems bzw. Antriebskraft in $N$ für das Auto über ein Interface zu setzen.
+Zusätzlich wird für jedes Objekt des Typs \enquote{Car} die aktuelle Position relativ zum Null Punkt in $m$, die aktuelle Geschwindigkeit in $m/s$ sowie  die aktuelle Beschleunigung in $m/s^2$ dokumentiert. Der Nutzer der Klasse hat die Möglichkeit die Brems bzw. Antriebskraft in $N$ für das Auto über ein Interface zu setzen.
 
 \begin{figure}
 	\centering
@@ -323,7 +323,7 @@ Um die gesetzte Brems bzw. Antriebskraft, unter Berücksichtigung der physikalis
 
 \paragraph{Luftwiderstand}
 
-Der Luftwiderstand ist maßgeblich für die Höchstgeschwindigkeit eines Fahrzeugs. Er hängt von der aerodynamischen Form des Fahrzeuges ab und steigt mit der Geschwindigkeit ins Quadrat. Außerdem spielt die momentane Luftdichte $p_{Luft}$ in $kg/m^3$ eine Rolle für den Luftwiderstand. Diese ist abhängig von der Höhe in der Atmosphäre sowie der Temperatur der Atmosphäre.  Wir haben für diese Umgebungsvariable einen Wert von $1,2$ gewählt, dies Entspricht der Luftdichte bei einer Temperatur von $20^\circ\text{C}$ auf Höhe des Meeresspiegels.
+Der Luftwiderstand ist maßgeblich für die Höchstgeschwindigkeit eines Fahrzeugs. Er hängt von der aerodynamischen Form des Fahrzeuges ab und steigt mit der Geschwindigkeit ins Quadrat. Außerdem spielt die momentane Luftdichte $p_{Luft}$ in $kg/m^3$ eine Rolle für den Luftwiderstand. Diese ist abhängig von der Höhe in der Atmosphäre sowie der Temperatur der Atmosphäre.  Wir haben für diese Umgebungsvariable einen Wert von $1,2$ gewählt, dies entspricht der Luftdichte bei einer Temperatur von $20^\circ\text{C}$ auf Höhe des Meeresspiegels.
 
 \begin{figure}
 	\centering
@@ -338,7 +338,7 @@ F_{Luft} = cw \cdot A \cdot \frac{p_{Luft} \cdot v_{Fzg}^2}{2}
 
 \paragraph{Rollwiderstand}
 
-Der Rollwiderstand beschreibt die nötige Arbeit um einen Reifen auf einer Kontaktfläche zu rollen. Durch die Fahrzeugmaße und das elastische Material des Reifens sowie dem Boden werden diese zusammengedrückt und bilden keine optimale Kreisform mehr. Diese Eigenschaft wird durch den Rollwiderstandskoeffizient $f_{Roll}$ abstrahiert. Wir haben für diese Umgebungsvariable einen Wert von $0,01$ gewählt was einem Autoreifen auf einem Asphaltboden entspricht. In die Formel geht außerdem die Erdbeschleunigung $g$ sowie der Steigungswinkel  $a$ eine Rolle. Wenn der Steigungswinkel steigt oder sinkt, also $ |a|  \gg 0$, konvergiert der Rollwiderstand gegen $0$. 
+Der Rollwiderstand beschreibt die nötige Arbeit um einen Reifen auf einer Kontaktfläche zu rollen. Durch die Fahrzeugmaße und das elastische Material des Reifens sowie dem Boden werden diese zusammengedrückt und bilden keine optimale Kreisform mehr. Diese Eigenschaft wird durch den Rollwiderstandskoeffizient $f_{Roll}$ abstrahiert. Wir haben für diese Umgebungsvariable einen Wert von $0,01$ gewählt was einem Autoreifen auf einem Asphaltboden entspricht. In die Formel spielt außerdem die Erdbeschleunigung $g$ sowie der Steigungswinkel  $a$ eine Rolle. Wenn der Steigungswinkel steigt oder sinkt, also $ |a|  \gg 0$, konvergiert der Rollwiderstand gegen $0$. 
 
 \begin{figure}
 	\centering
@@ -386,7 +386,7 @@ Der Beschleunigungswiderstand beschreibt die nötige Kraft die benötigt wird um
 F_{FW} = F_{Luft} + F_{Roll} + F_{Steig} + F_{B}
 \end{equation}
 
-Um nun die tatsächliche Kraft zu erhalten müssen die Fahrwiderstände von der Antriebskraft subtrahiert werden. Dieser Kraft definiert als $kg * m/s^2$ kann nun in die aktuelle Beschleunigung umgerechnet werden.
+Um nun die tatsächliche Kraft zu erhalten müssen die Fahrwiderstände von der Antriebskraft subtrahiert werden. Dieser Kraft, definiert als $kg * m/s^2$, kann nun in die aktuelle Beschleunigung umgerechnet werden.
 
 \begin{equation}
 a = \frac{F - F_{FW}}{m_{Fzg} + m_{Zu}}
@@ -461,7 +461,7 @@ Im Code Beispiel (siehe Listing \ref{lst:integration}) wird in der Funktion \cod
 
 \subsection{Modell der Wissensbasis}
 
-Die Wissensbasis besteht aus der Regelbasis und der Datenbasis. Alle Wertebereiche für die Eingangsgrößen und Stellgrößen sowie die dazugehörigen linguistischen Termen und dazu assoziierten Fuzzy-Mengen gehören zu der Datenbasis. Die Regelbasis bestehtaus den linguistischen Kontrollregeln. Die Wissensbasis soll durch den Benutzer zur Laufzeit des konfigurierbar sein. Aus diesem Grund wurden alle nötigen Parameter in ein Konfigurationsobjekt \code{FuzzyConfig} gebettet das zur jeder Zeit vom Fuzzy Regler geladen werden kann. Um das Verständnis zu verbessern werden nun die einzelnen Komponenten der Wissensbasis und deren dazugehörigen Modellierungen vorgestellt.
+Die Wissensbasis besteht aus der Regelbasis und der Datenbasis. Alle Wertebereiche für die Eingangsgrößen und Stellgrößen sowie die dazugehörigen linguistischen Termen und dazu assoziierten Fuzzy-Mengen gehören zu der Datenbasis. Die Regelbasis besteht aus den linguistischen Kontrollregeln. Die Wissensbasis soll durch den Benutzer zur Laufzeit des Programms konfigurierbar sein. Aus diesem Grund wurden alle nötigen Parameter in ein Konfigurationsobjekt \code{FuzzyConfig} gebettet das zur jeder Zeit vom Fuzzy-Regler geladen werden kann. Um das Verständnis zu verbessern werden nun die einzelnen Komponenten der Wissensbasis und deren dazugehörigen Modellierungen vorgestellt.
 
 \paragraph{Eingangs- Ausgangsgrößen}
 
@@ -476,7 +476,7 @@ Für jede messbare Eingangsgröße und jede Ausgangsgröße muss ein Wertebereic
 
 \paragraph{Fuzzy-Menge und Linguistischer Term}
 
-Da ein linguistischer Term immer nur einer Fuzzy-Menge zugeordnet sein sollte, wurden diese Elemente in unserem Model in der Klasse \code{FuzzyTerm} implementiert. Die eigentliche Zugehörigkeitsfunktion wird durch die Funktion höherer Ordnung \code{(Double => FuzzyBool)} ausgedrückt. Wobei \code{FuzzyBool} nur ein Fließkommazahl in den Grenzen $\left[0,1\right]$ ist.
+Da ein linguistischer Term immer nur einer Fuzzy-Menge zugeordnet sein sollte, wurden diese Elemente in unserem Model zusammen in der Klasse \code{FuzzyTerm} implementiert. Die eigentliche Zugehörigkeitsfunktion wird durch die Funktion höherer Ordnung \code{(Double => FuzzyBool)} ausgedrückt. Wobei \code{FuzzyBool} nur ein Fließkommazahl in den Grenzen $\left[0,1\right]$ ist.
 
 \paragraph{Fuzzy-Regeln}
 
@@ -488,7 +488,7 @@ Die Aufgabe der Defuzzyfizierungs-Methoden ist es aus der Ausgangsfuzzymenge ein
 
 \subsection{Modell des Fuzzy-Reglers}
 
-Die eigentliche Fuzzy-Logik findet in der Klasse \code{FuzzyCarController} statt. Die Klasse wird mit einer \code{FuzzyConfig} und zwei Objekten des Interfaces \code{Drivable} erzeugt. Eine Instanz stellt hierbei das Verfolger- und eins das Vorausfahrende Fahrzeug dar. Es wird eine Funktion \code{tick()} bereitgestellt. Diese muss vom Nutzer der Klasse zyklisch aufgerufen werden um einen Berechnungsschritt auszuführen. Jeder Berechnungsschritt durchläuft vier Phasen.
+Die eigentliche Fuzzy-Regelung findet in der Klasse \code{FuzzyCarController} statt. Die Klasse wird mit einer \code{FuzzyConfig} und zwei Objekten des Interfaces \code{Drivable} erzeugt. Eine Instanz stellt hierbei das Verfolger- und eins das Vorausfahrende Fahrzeug dar. Es wird eine Funktion \code{tick()} bereitgestellt. Diese muss vom Nutzer der Klasse zyklisch aufgerufen werden um einen Berechnungsschritt auszuführen. Jeder Berechnungsschritt durchläuft vier Phasen.
 
 \begin{figure}
 	\centering
@@ -522,7 +522,7 @@ In dieser Phase wird der vom Defuzzyfizierungs-Interface bestimmte Wert an die j
 \label{section:fuzzy-impl}
 \subsubsection{Fuzzy-Regler nach Mamdani}
 
-In diesem Abschnitt werden die vier Schritte des Fuzzy-Reglers nach Mamdani widerholt und deren Implementierung erläutert.
+In diesem Abschnitt werden die vier Schritte des Fuzzy-Reglers nach Mamdani wiederholt und deren Implementierung erläutert.
 
 \paragraph{Prämissenauswertung}
 
@@ -530,7 +530,7 @@ Als erstes wird in der Berechnung die Prämissenauswertung für eine Regel durch
 
 \begin{quote}Für die Auswertung einer Regel wird zunächst der Akzeptanzgrad dieser Regel bestimmt. Dazu wird für jeden linguistischen Term der Prämisse der Zugehörigkeitsgrad für den kürzlich gemessene Messwert bestimmt. Also $\mu_v (x_v)$ mit $v = 1...n$. Da es in einer Regel mehrere Prämissen geben kann, die mit den Operatoren $\left[and, or\right]$ verknüpft werden können, müssen auch die Zugehörigkeitsgrade der $n$-verschiedenen Prämissenteilen durch eine geeignete Konjunktion, z.B. Minimum für $and$-Verknüpfungen, verknüpft werden. \end{quote}
 
-Wir müssen also eine \code{FuzzyRule} betrachten und für jeden \code{FuzzyTerm} der Prämisse den richtigen Messwert auf die Zugehörigkeitsfunktion anwenden. In Zeile vier und fünf ist zu erkennen wie zwischen den verschiedenen \code{FuzzyValueConnector} unterschieden wird und je nach Fall die gemessene Distanz oder die aktuelle Geschwindigkeit in die Zugehörigkeitsfunktion eingesetzt wird. Nach der der \code{map()} Funktion auf die \code{inputs} der \code{FuzzyRule} hat der Value \code{acceptance} den Typ \code{List[FuzzyBool]}, da die Zugehörigkeitsfunktion den Typ \code{(Double => FuzzyBool)} hat.  In unserer Implementierung sind zum aktuellen Zeitpunkt nur $and$-Verknüpfungen möglich. Das bedeutet, dass die das Minimum der errechneten Akzeptanzgraden gewählt wird (siehe Zeile 9 in Listing \ref{lst:acceptance}). Durch die Funktion \code{foldLeft} in Zeile neun wird aus \code{List[FuzzyBool]} ein \code{Double} extrahiert welches das Minimum der Liste darstellt.
+Wir müssen also eine \code{FuzzyRule} betrachten und für jeden \code{FuzzyTerm} der Prämisse den richtigen Messwert auf die Zugehörigkeitsfunktion anwenden. In Zeile vier und fünf ist zu erkennen wie zwischen den verschiedenen \code{FuzzyValueConnector} unterschieden wird und je nach Fall die gemessene Distanz oder die aktuelle Geschwindigkeit in die Zugehörigkeitsfunktion eingesetzt wird. Nach der \code{map()} Funktion auf die \code{inputs} der \code{FuzzyRule} hat der Value \code{acceptance} den Typ \code{List[FuzzyBool]}, da die Zugehörigkeitsfunktion den Typ \code{(Double => FuzzyBool)} hat.  In unserer Implementierung sind zum aktuellen Zeitpunkt nur $and$-Verknüpfungen möglich. Das bedeutet, dass die das Minimum der errechneten Akzeptanzgraden gewählt wird (siehe Zeile 9 in Listing \ref{lst:acceptance}). Durch die Funktion \code{foldLeft} in Zeile neun wird aus \code{List[FuzzyBool]} ein \code{Double} extrahiert welches das Minimum der Liste darstellt.
 
 \begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Berechnung des Akzeptanzgrad, label=lst:acceptance]]
 val acceptance = rule.inputs.map(
