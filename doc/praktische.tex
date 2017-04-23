@@ -30,6 +30,10 @@
 \usepackage{listings}
 \usepackage{csquotes}
 \usepackage{siunitx}
+\usepackage{tocloft}
+
+\setlength{\cftfignumwidth}{2em}
+
 \newtheoremstyle{Umgebung}	% name
 {20pt}	% Space above, empty = `usual value'
 {20pt} % Space below
@@ -156,7 +160,7 @@
 		\newline  Prof. Dr. Wolfgang Henrich
 		\newline
 		\newline\rule{0mm}{5ex}\textbf{Abgabedatum:} 
-		\newline 14.02.2017
+		\newline 24.04.2017
 		\newline
 	\end{tabular} 
 \end{center}
@@ -178,6 +182,13 @@
 \addcontentsline{toc}{section}{\texorpdfstring{II \hspace{0.35em}Inhaltsverzeichnis}{Inhaltsverzeichnis}}
 \addtocounter{section}{1}
 \tableofcontents
+\pagebreak
+\listoffigures
+\pagebreak
+\listoftables
+\pagebreak
+\renewcommand{\lstlistlistingname}{Listingverzeichnis}
+\lstlistoflistings
 \pagebreak
 \rhead{VERZEICHNISSE}
 
@@ -209,7 +220,8 @@
 % Einleitung
 % ----------------------------------------------------------------------------------------------------------
 \begin{abstract} 
-	Die vorliegende Hausarbeit gibt einen Einstieg in die theoretische Fuzzy-Logik und behandelt dabei Fuzzy-Mengen, Fuzzy-Relation sowie Fuzzy-Operationen. Dem Leser soll bewusst gemacht werden worin sich die scharfe Mengenlehre von der der Fuzzy-Mengenlehre unterscheidet. An anschaulichen Beispielen wird erklärt was Linguistische Terme sind und wie diese repräsentiert werden können. Eigentliches Ziel ist die Untersuchung des Einsatzgebiets der Fuzzy-Regler, welches ein Teilgebiet der Fuzzy-Logik darstellt. Hier werden die Komponenten wie z.B. die Wissensbasis, das Fuzzyfizierungs- und Defuzzyfizierungs-Interface sowie die Entscheidungslogik vorgestellt. Da zur Zeit zwei Varianten (Mamdani sowie Takagi/Sugeno)  der Fuzzy-Regler verbreitet sind, werden diese beiden nacheinander vorgestellt und deren Vorteile aufgezeigt. Zuletzt werden die üblichen Defuzzifizierungsmethoden erklärt und an einem Beispiel veranschaulicht.
+	Die vorliegende Hausarbeit bearbeitet eine Problemstellung des autonomen Fahrens. Konkret soll ein durch einen Fuzzy-Regler gesteuertes Autos einem anderen Auto im optimalen Abstand folgen. Zunächst werden physikalischen Bedingungen für die beiden Autos erläutert. Anschließen wird darauf eingegangen wie man mit Hilfe von numerischer Integration die tatsächliche Geschwindigkeit bzw. Bewegung eines Fahrzeugs simulieren kann. Der eigentlich Fuzzy-Regler wurde mithilfe von funktionaler Programmierung implementiert. Zuletzt wird die GUI sowie das Zusammenspiel zwischen den Modellen und der GUI vorgestellt.
+
 \end{abstract} 
 \newpage
 
@@ -228,7 +240,7 @@ Bei der Implementierung sollte darauf geachtet werden, dass beide Fahrzeuge, so 
 
 \section{Implementierung}
 
-todo
+In diesem Kapitel wird eine Lösung für das gestellte Problem vorgestellt. Wir empfehlen dem Leser zuerst die Ausarbeitung zum theoretischen Teil der Fuzzy-Regelung zu lesen, da hier keine Grundlagen erläutert werden.
 
 \subsection{Funktionale Programmierung}
 
@@ -236,7 +248,28 @@ Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem al
 
 \subsubsection{Map, Reduce, Filter}
 
-todo
+Die drei Funktionen map, filter und fold sind essentiell um die funktionale Programmierung zu verstehen. \code{map} wendet eine Funktion auf jedes Element einer List an und kreiert somit eine neue Liste (siehe Abbildung \ref{fig:map}). Die Funktion \code{filter} entfernt genau die Element einer List, die eine mit einer Funktion verbunden ein boolesches \code{false} liefern (siehe Abbildung \ref{fig:filter}). Die Funktion \code{fold} oder auch \code{reduce} wendet eine Funktion mit zwei Parametern solange auf Paare der List an, bis nur noch ein Element in der Liste enthalten ist (siehe Abbildung \ref{fig:reduce}).
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\linewidth]{img/practical/map}
+	\caption{Veranschaulichung Map Funktion}
+	\label{fig:map}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\linewidth]{img/practical/reduction}
+	\caption{Veranschaulichung Reduce Funktion}
+	\label{fig:reduce}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\linewidth]{img/practical/filter}
+	\caption{Veranschaulichung Filter Funktion}
+	\label{fig:filter}
+\end{figure}
 
 \subsection{Modell des Fahrzeugs}
 
@@ -255,7 +288,7 @@ Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position 
 % \usepackage{booktabs}
 \begin{table}[]
 	\centering
-	\caption{Phssikalische Spezifikation der Autos}
+	\caption{Physikalische Spezifikation der Fahrzeuge}
 	\label{table:car}
 	\begin{tabular}{@{}llll@{}}
 		\toprule
@@ -270,6 +303,20 @@ Zusätzlich wird für jedes Object des Typs \enquote{Car} die aktuelle Position 
 	\end{tabular}
 \end{table}
 
+
+\begin{table}[]
+	\centering
+	\caption{Physikalische Spezifikation der Umwelt}
+	\label{table:physics}
+	\begin{tabular}{@{}llll@{}}
+		\toprule
+		Eigenschaft                     & Wert & Einheit & Bezeichner           \\ \midrule
+		Erdanziehungskraft	            & 9,81 & $m/s^2$    & $g$            \\
+		Zuladung                        & 1.2  & $kG/m^3$   & $p_{Luft}$             \\
+		Strömungswiderstandskoeffizient & 0.01 & -       & $f_{roll}$                 \\ \bottomrule       
+	\end{tabular}
+\end{table}
+
 \subsubsection{Bestimmung der Beschleunigung}
 
 Um die gesetzte Brems bzw. Antriebskraft, unter Berücksichtigung der physikalischen Gesetze, in eine Beschleunigung umzurechnen, betrachten wir zunächst die Fahrwiderstände die ein Fahrzeug überwinden muss. Als Fahrwiderstand $F_{FW}$ wird die Summe der Widerstände bezeichnet, die ein Fahrzeug mit Hilfe einer Antriebskraft überwinden muss, um das Fahrzeug zu bewegen. Dazu gehört der Luftwiderstand $F_{Luft}$, der Rollwiderstand $F_{Roll}$, der Steigungswiderstand $F_{Steig}$ sowie der Beschleunigungswiderstand $F_{B}$.
@@ -281,7 +328,7 @@ Der Luftwiderstand ist maßgeblich für die Höchstgeschwindigkeit eines Fahrzeu
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/practical/Luftwiderstand}
-	\caption{Prinzipskizze zum Luftwiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Luftwiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\caption{Prinzipskizze zum Luftwiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Luftwiderstand.png)}
 	\label{fig:luftwiderstand}
 \end{figure}
 
@@ -296,7 +343,7 @@ Der Rollwiderstand beschreibt die nötige Arbeit um einen Reifen auf einer Konta
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/practical/Rollwiderstand}
-	\caption{Prinzipskizze zum Rollwiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Rollwiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\caption{Prinzipskizze zum Rollwiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Rollwiderstand.png)}
 	\label{fig:Rollwiderstand}
 \end{figure}
 
@@ -312,7 +359,7 @@ Der Steigungswiderstand beschreibt die nötige Kraft die benötigt wird um die M
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/practical/Steigungswiderstand}
-	\caption{Prinzipskizze zum Steigungswiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Steigungswiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\caption{Prinzipskizze zum Steigungswiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Steigungswiderstand.png)}
 	\label{fig:Steigungswiderstand}
 \end{figure}
 
@@ -327,7 +374,7 @@ Der Beschleunigungswiderstand beschreibt die nötige Kraft die benötigt wird um
 \begin{figure}
 	\centering
 	\includegraphics[width=0.7\linewidth]{img/practical/Beschleunigungswiderstand}
-	\caption{Prinzipskizze zum Beschleunigungswiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Beschleunigungswiderstand.png), https://creativecommons.org/licenses/by-sa/4.0/legalcode)}
+	\caption{Prinzipskizze zum Beschleunigungswiderstand an Fahrzeugen (Simon Herzog (https://commons.wikimedia.org/wiki/File:Beschleunigungswiderstand.png)}
 	\label{fig:Beschleunigungswiderstand}
 \end{figure}
 
@@ -450,7 +497,7 @@ Die eigentliche Fuzzy-Logik findet in der Klasse \code{FuzzyCarController} statt
 	\label{fig:controller-diagram}
 \end{figure}
 
-\subsubsection{Phasen des Fuzzy-Reglers}
+\subsubsection{Phasen}
 
 \paragraph{Simulieren}
 
@@ -519,7 +566,7 @@ Wir müssen also die Zugehörigkeitsfunktion des Ausgangs-\code{FuzzyTerm} um de
 Der letzte Schritt ist die Aggregation. Da die Prämissenauswertung und die Aktivierung für jede Regel in der Regelbasis ausgeführt wird, haben wir nach der erfolgreichen Aktivierung $k$ verschiedene Fuzzy-Stellgrößen die nun durch die Aggregation zusammengeführt werden. Dafür wird die Maximumbildung verwendet.
 
 \begin{quote}
-Die Ausgabe aktivierten Fuzzy-Mengen $B_{1...k}$ werden mithilfe der Maximumbildung zusammengefügt. Diese eine Ausgangs Fuzzy-Menge $	output_{x_1,..., x_n}$ wird dann an das Defuzzifizierungs-Interface übergeben und mit der gewählten Defuzzifizierungs-Methoden (siehe Kapitel \ref{defuzzy}) in einen scharfen Wert umgewandelt.
+Die Ausgabe aktivierten Fuzzy-Mengen $B_{1...k}$ werden mithilfe der Maximumbildung zusammengefügt. Diese eine Ausgangs Fuzzy-Menge $	output_{x_1,..., x_n}$ wird dann an das Defuzzifizierungs-Interface übergeben und mit der gewählten Defuzzifizierungs-Methoden in einen scharfen Wert umgewandelt.
 
 \begin{equation}
 output_{x_1,..., x_n}: y \mapsto \max_{r \in (1,...,k)}(output^{R_r}_{x_1...x_n})
@@ -532,16 +579,20 @@ def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool]): ((Double) 
 }
 \end{lstlisting}
 
-Wenn man die $k$ Regeln aus dem Schritt der Aktivierung nun zusammenfügt erhält man den Typ \code{List[(Double => FuzzyBool)]}. Daraus soll nun wieder eine Funktion des Typs \code{(Double => FuzzyBool)} gemacht werden. Die Kombination durch Maximumbildung wie in Listing \ref{lst:aggregation} zu sehen gibt uns das gewünschte Resultat. Dies Funktion muss nun an das Defuzzyfizierungs-Interface gegeben werden.
+Wenn man die $k$ Regeln aus dem Schritt der Aktivierung nun zusammenfügt erhält man den Typ \code{List[(Double => FuzzyBool)]}. Daraus soll nun wieder eine Funktion des Typs \code{(Double => FuzzyBool)} gemacht werden. Die Kombination durch Maximumbildung wie in Listing \ref{lst:aggregation} zu sehen gibt uns das gewünschte Resultat. Diese Funktion muss nun an das Defuzzyfizierungs-Interface gegeben werden.
 
-\paragraph{Defuzzyfizierung}
+\paragraph{Defuzzifizierung}
 
+Die aus der Aggreagtion entstanden Funktion muss nun auf das Interval des \code{FuzzyValueConnectors} angewendet werden und danach mit einer Defuzzifizierungs-Methode in einen scharfen Wert umgewandelt werden.
 
+\begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Anwendung der Defuzzifizierungs-Methode, label=lst:defuzzy]]
+	var setpoint = (connector.minVal to connector.maxVal)(logic.defuzzy.func.apply(output))
+\end{lstlisting}
 
 
 \subsection{Konfiguration}
 
-Mögliche Konfigurationen sind:
+Der Nutzer des Programms kann zur Laufzeit folgende Konfigurationen für die Fuzzy-Regelung vornehmen:
 
 \begin{itemize}
 	\item Partitionierung der Eingangsvariablen
@@ -581,6 +632,7 @@ medSpeed = $1000, 2000, 3000$ \\
 fullSpeed = $2000, 3000, \infty$ \\
 
 \paragraph{Regeln}
+$\newline$
 
 \begin{lstlisting}
 IF Distance = isVeryFar AND Speed = isSlow THEN Force = fullSpeed
@@ -601,16 +653,19 @@ IF Distance = isVeryClose AND Speed = isExtreme THEN Force = fullBrake
 
 \end{lstlisting}
 
-\subsection{Fuzzy Controller}
+\paragraph{Defuzzifizierungsmethode}
+$\newline$
+Es stehen folgende Defuzzifizierungsmethoden zur Auswahl:
 
-\subsection{Grafische Oberfläche}
-
+\begin{itemize}
+	\item Mean of Maxima
+	\item Maxium criteria
+	\item Center of Gravity
+\end{itemize}
 
 \section{Fazit}
 
-\subsection{Probleme}
-
-Leider ist dem Team zu spät aufgefallen, dass es sinnvoll gewesen wäre eine Ableitung des Abstands in die Regelung mit einzubringen. Die gesamte Regelung erscheint nun ein wenig Träge.
+Das Team ist mit der Implementierung sehr zufrieden. Es hat Spaß gemacht das theoretisch erlernte Wissen aus der ersten Ausarbeitung einzusetzen. Wir denken außerdem, dass es sehr nützlich für zukünftige Projekte sein könnte, die Mechaniken der Fuzzy-Logik bzw. der Fuzzy-Regelung kennen gelernt zu haben. Die Implementierung in Scala war unserer Meinung nach ein voller Erfolg. Die eigentliche Fuzzy-Regelung lässt sich mit Hilfe von Funktionen höherer Ordnung sehr direkt ausdrücken. Außerdem hat das Team durch das Projekt die Kenntnisse im Bereich funktionale Programmierung ausbauen können. Leider ist sehr spät aufgefallen, dass zusätzlich zu den verwendeten Eingangsgrößen Geschwindigkeit und Abstand die Ableitung des Abstands sehr nützlich hätte seinen können. Dafür hätte man noch eine numerische Ableitung der Messewerte implementieren müssen, doch würde die Regelung dadurch sehr viel effizienter funktionieren. 
 
 % ----------------------------------------------------------------------------------------------------------
 
