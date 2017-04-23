@@ -23,7 +23,7 @@ class App extends Application {
     stage.setHeight(bounds.getHeight());
 
     stage.setTitle("Fuzzy-Controller")
-    loader = new FXMLLoader(getClass().getResource("presentation/mainView/main.fxml"))
+    loader = new FXMLLoader(getClass().getResource("/main.fxml"))
     val scene = new Scene(loader.load())
     stage.setScene(scene)
     stage.show()

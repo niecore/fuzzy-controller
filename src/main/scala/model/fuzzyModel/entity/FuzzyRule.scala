@@ -5,7 +5,6 @@ package model.fuzzyModel.entity
   */
 class FuzzyRule(val name: String,
                 val inputs: List[FuzzyTerm],
-                val op: List[String],
                 val outputs: FuzzyTerm) {
 
   override def toString = {
@@ -14,7 +13,7 @@ class FuzzyRule(val name: String,
     s ++=  "IF "
     inputs.foreach( e => s++= e.toString + " AND ")
 
-    s.setLength(s.length() - 4);
+    s.setLength(s.length - 4);
 
     s ++= "THEN "
 

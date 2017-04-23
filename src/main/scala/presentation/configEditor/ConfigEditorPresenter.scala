@@ -40,7 +40,7 @@ class ConfigEditorPresenter extends Initializable{
   }
 
   def openMfEditor(event: ActionEvent, valueConnector: FuzzyValueConnector): Unit ={
-    val loader = new FXMLLoader(getClass.getResource("../memberFunctionEditor/memberFunctionEditor.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("/memberFunctionEditor.fxml"))
 
     val stage = new Stage()
     stage.setScene(new Scene(loader.load()))
@@ -87,7 +87,7 @@ class ConfigEditorPresenter extends Initializable{
   }
 
   def openRuleEditor(event: ActionEvent): Unit ={
-    val loader = new FXMLLoader(getClass.getResource("../ruleEditor/ruleEditor.fxml"))
+    val loader = new FXMLLoader(getClass.getResource("/ruleEditor.fxml"))
 
     val stage = new Stage()
     stage.setScene(new Scene(loader.load()))
