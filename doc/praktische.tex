@@ -228,11 +228,15 @@ Bei der Implementierung sollte darauf geachtet werden, dass beide Fahrzeuge, so 
 
 \section{Implementierung}
 
-Dieses Kapitel dient 
+todo
 
 \subsection{Funktionale Programmierung}
 
 Als funktionale Programmierung bezeichnet man ein Programmierparadigma in dem alles Programme lediglich aus Funktionen bestehen. Hierbei können neue Funktionen aus bereits bestehenden Funktionen zusammengesetzt werden. Ebenfalls werden Funktionen in der funktionalen Programmierung als Wert angesehen. Dies erlaubt es Funktionen als Parameter oder Rückgabe zu verwenden, dies nennt man \enquote{Funktion höhrer Ordnung}. In sogenannten \enquote{reinen} funktionalen Programmiersprachen gibt es keine Variablen womit Seiteneffekte vollkommen ausgeschlossen werden. Für die Implementierung wird die Sprache Scala\footnote{https://www.scala-lang.org/} verwendet. Scala ist eine JVM-Sprache die funktionale Programmierung und Objektorientierte Programmierung verbindet. Wir haben diese Sprache gewählt, da wir einerseits unsere Kenntnisse in der Sprache durch das Projekt erweitern wollten aber auch anderseits der Meinung waren, dass sich eine Fuzzy Regelung einfacher mithilfe von Funktionen höherer Ordnung ausdrücken lassen.
+
+\subsubsection{Map, Reduce, Filter}
+
+todo
 
 \subsection{Modell des Fahrzeugs}
 
@@ -318,7 +322,7 @@ F_{Steig} = (m_{Fzg} + m_{Zu}) \cdot g \cdot sin(a)
 
 \paragraph{Beschleunigungswiderstand}
 
-Der Beschleunigungswiderstand beschreibt die nötige Kraft die benötigt wird um die Beschleunigung eines Fahrzeugs zu ändern. Dieser Widerstand entsteht durch die Trägheit des Fahrzeugs. Der Massefaktor $e_i$ (>=1) fasst den translatorischer Anteil, also Maße die sich in Fahrtrichtung bewegt sowie den rotatorischer Anteil, also alle rotierende Teile im Antriebsstrang (Motor, Kurbelwelle, Kupplung, Räder) zusammen. Der Massefaktor ist somit auch stark abhängig vom gewählten Gang des Fahrzeugs. In unserem Modell ist der Massefaktor auf 1 gesetzt.
+Der Beschleunigungswiderstand beschreibt die nötige Kraft die benötigt wird um die Beschleunigung eines Fahrzeugs zu ändern. Dieser Widerstand entsteht durch die Trägheit des Fahrzeugs. Der Massefaktor $e_i$ ($\ge 1$) fasst den translatorischer Anteil, also Maße die sich in Fahrtrichtung bewegt sowie den rotatorischer Anteil, also alle rotierende Teile im Antriebsstrang (Motor, Kurbelwelle, Kupplung, Räder) zusammen. Der Massefaktor ist somit auch stark abhängig vom gewählten Gang des Fahrzeugs. In unserem Modell ist der Massefaktor auf 1 gesetzt.
 
 \begin{figure}
 	\centering
@@ -410,7 +414,7 @@ Im Code Beispiel (siehe Listing \ref{lst:integration}) wird in der Funktion \cod
 
 \subsection{Modell der Wissensbasis}
 
-Die Wissensbasis besteht aus der Regelbasis und der Datenbasis. Alle Wertebereiche für die Eingangsgrößen und Stellgrößen sowie die dazugehörigen linguistischen Termen und dazu assoziierten Fuzzy-Mengen gehören zu der Datenbasis. Die Regelbasis bestehtaus den linguistischen Kontrollregeln. Die Wissensbasis soll durch den Benutzer zur Laufzeit des konfigurierbar sein. Aus diesem Grund wurden alle nötigen Parameter in ein Konfigurationsobjekt gebettet das zur jeder Zeit vom Fuzzy Regler geladen werden kann. Um das Verständnis zu verbessern werden nun die einzelnen Komponenten der Wissensbasis und deren dazugehörigen Modellierungen vorgestellt.
+Die Wissensbasis besteht aus der Regelbasis und der Datenbasis. Alle Wertebereiche für die Eingangsgrößen und Stellgrößen sowie die dazugehörigen linguistischen Termen und dazu assoziierten Fuzzy-Mengen gehören zu der Datenbasis. Die Regelbasis bestehtaus den linguistischen Kontrollregeln. Die Wissensbasis soll durch den Benutzer zur Laufzeit des konfigurierbar sein. Aus diesem Grund wurden alle nötigen Parameter in ein Konfigurationsobjekt \code{FuzzyConfig} gebettet das zur jeder Zeit vom Fuzzy Regler geladen werden kann. Um das Verständnis zu verbessern werden nun die einzelnen Komponenten der Wissensbasis und deren dazugehörigen Modellierungen vorgestellt.
 
 \paragraph{Eingangs- Ausgangsgrößen}
 
@@ -434,6 +438,104 @@ Die Regelbasis in Form von linguistischen "Wenn - Dann - Regeln" wird durch die 
 \paragraph{Defuzzyfizierungs-Methoden}
 
 Die Aufgabe der Defuzzyfizierungs-Methoden ist es aus der Ausgangsfuzzymenge einen Stellwert auszuwählen. In unserer Modellierung arbeitet die Defuzzyfizierungs-Methoden mit einer Liste aller im Wertebereich enthaltenen Werte auf die die kombinierten Zugehörigkeitsfunktion aller Regeln bereits angewendet wurden. Sie liefert dann einen Stellwert in diesem Wertebereich zurück. Die Defuzzyfizierungs-Methoden wird durch die Funktion höherer Ordnung \code{List[Double] => Int)} beschrieben und durch einen Namen identifiziert und in der Klasse \code{FuzzyDefuzzyficationFunc} zusammengefasst.
+
+\subsection{Modell des Fuzzy-Reglers}
+
+Die eigentliche Fuzzy-Logik findet in der Klasse \code{FuzzyCarController} statt. Die Klasse wird mit einer \code{FuzzyConfig} und zwei Objekten des Interfaces \code{Drivable} erzeugt. Eine Instanz stellt hierbei das Verfolger- und eins das Vorausfahrende Fahrzeug dar. Es wird eine Funktion \code{tick()} bereitgestellt. Diese muss vom Nutzer der Klasse zyklisch aufgerufen werden um einen Berechnungsschritt auszuführen. Jeder Berechnungsschritt durchläuft vier Phasen.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\linewidth]{img/practical/controller-diagram}
+	\caption{Interfaces des Fuzzy-Reglers}
+	\label{fig:controller-diagram}
+\end{figure}
+
+\subsubsection{Phasen des Fuzzy-Reglers}
+
+\paragraph{Simulieren}
+
+In der Phase \enquote{Simulieren} werden die \code{tick()} Funktionen der beiden Fahrzeuge aufgerufen und somit die neuen Positionen der Fahrzeuge bestimmt.
+
+\paragraph{Messen}
+
+In der Phase \enquote{Messen} werden die aktuellen Werte der Fahrzeuge ausgelesen und eventuelle Berechnungen durchgeführt um weiter Eingangsvariablen für die Fuzzy-Regelung zu erzeugen. An dieser Stelle errechnen wir z.Z. nur den Abstand es wäre aber denkbar an dieser Stelle weitere Informationen auszulesen und diese für die Logik zu verwenden.
+
+\begin{equation}
+	distance = chasedCar.position - controlledCar.position
+\end{equation}
+
+\paragraph{Fuzzy-Regelung ausführen}
+
+In dieser Phase werden die gemessenen Werte in die Regeln der Fuzzy-Regelung eingesetzt und die vier Schritte eines Mamdani Fuzzy-Reglers, Prämissenauswertung, Aktivierung, Aggregation und Defuzzyfizierung ausgeführt. Wie diese Teilschritte mithilfe von Funktionaler Programmierung umgesetzt wurden, wird im Abschnitt \ref{section:fuzzy-impl} beschrieben.
+
+\paragraph{Stellwert setzen}
+
+In dieser Phase wird der vom Defuzzyfizierungs-Interface bestimmte Wert an die jeweiligen \code{FuzzyValueConnector} übergeben. Unsere Implementierung benutzt jedoch nur eine Stellgröße und zwar die Antriebskraft für das Verfolgerfahrzeug.
+
+\label{section:fuzzy-impl}
+\subsubsection{Fuzzy-Regler nach Mamdani}
+
+In diesem Abschnitt werden die vier Schritte des Fuzzy-Reglers nach Mamdani widerholt und deren Implementierung erläutert.
+
+\paragraph{Prämissenauswertung}
+
+Als erstes wird in der Berechnung die Prämissenauswertung für eine Regel durchgeführt. Hierfür ein Ausschnitt aus der theoretischen Ausarbeitung über die Fuzzy-Regelung:
+
+\begin{quote}Für die Auswertung einer Regel wird zunächst der Akzeptanzgrad dieser Regel bestimmt. Dazu wird für jeden linguistischen Term der Prämisse der Zugehörigkeitsgrad für den kürzlich gemessene Messwert bestimmt. Also $\mu_v (x_v)$ mit $v = 1...n$. Da es in einer Regel mehrere Prämissen geben kann, die mit den Operatoren $\left[and, or\right]$ verknüpft werden können, müssen auch die Zugehörigkeitsgrade der $n$-verschiedenen Prämissenteilen durch eine geeignete Konjunktion, z.B. Minimum für $and$-Verknüpfungen, verknüpft werden. \end{quote}
+
+Wir müssen also eine \code{FuzzyRule} betrachten und für jeden \code{FuzzyTerm} der Prämisse den richtigen Messwert auf die Zugehörigkeitsfunktion anwenden. In Zeile vier und fünf ist zu erkennen wie zwischen den verschiedenen \code{FuzzyValueConnector} unterschieden wird und je nach Fall die gemessene Distanz oder die aktuelle Geschwindigkeit in die Zugehörigkeitsfunktion eingesetzt wird. Nach der der \code{map()} Funktion auf die \code{inputs} der \code{FuzzyRule} hat der Value \code{acceptance} den Typ \code{List[FuzzyBool]}, da die Zugehörigkeitsfunktion den Typ \code{(Double => FuzzyBool)} hat.  In unserer Implementierung sind zum aktuellen Zeitpunkt nur $and$-Verknüpfungen möglich. Das bedeutet, dass die das Minimum der errechneten Akzeptanzgraden gewählt wird (siehe Zeile 9 in Listing \ref{lst:acceptance}). Durch die Funktion \code{foldLeft} in Zeile neun wird aus \code{List[FuzzyBool]} ein \code{Double} extrahiert welches das Minimum der Liste darstellt.
+
+\begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Berechnung des Akzeptanzgrad, label=lst:acceptance]]
+val acceptance = rule.inputs.map(
+	inputTerm => {
+		inputTerm.adapter.name match {
+			case "Distance" => inputTerm.func.apply(distance)
+			case "Speed" => inputTerm.func.apply(speed)
+		}
+	}
+)
+val minAcceptance = acceptance.foldLeft(Double.MaxValue)(_ min _.value)
+\end{lstlisting}
+
+\paragraph{Aktivierung}
+
+Der nächste Schritt in der Fuzzy-Regelung ist die Aktivierung. Die Aktivierung wird wie auch die Prämissenauswertung für jede Regel in der Regelbasis ausgeführt. Für die Inferenzmethode haben wir die MAX-MIN-Inferenz gewählt. Deren Verhalten wird jetzt aus der theoretischen Ausarbeitung zititert:
+
+\begin{quote}Die Konklusion ergibt eine Fuzzy-Menge von Stellwerten. Um die Aktivierung der Konklusion zu bestimmen muss der linguistische Term mit dem Akzeptanzgrad der Prämisse verknüpft werden. Dazu wird die sogenannte Inferenzmethode gewählt. Bei der MAX-MIN-Inferenz wird die Ausgabe Fuzzy-Menge $B$ an der Höhe des minimalen Akzeptanzgrad der Prämisse gekappt. 
+	
+	\begin{equation}
+	output^{R_r}_{x_1...x_n}:  y \mapsto min(\mu_{1,r}(x_1), ..., \mu_{n,r}(x_n), \mu_r(y))
+	\end{equation}
+\end{quote}
+
+Wir müssen also die Zugehörigkeitsfunktion des Ausgangs-\code{FuzzyTerm} um den, zuvor berechneten, Akzeptanzgrade der Prämisse kappen. Es wird also eine Funktion höherer Ordnung erstellt, die ein übergebenes\code{Double} auf die Zugehörigkeitsfunktion der Ausgangs-\code{FuzzyTerm} anwendet und das Resultat mit dem Akzeptanzgrad der Prämisse auf das Minimum vergleicht und dieses Minimum zurückgibt. Der Typ des Resultats der Aktivierung ist also \code{(Double => FuzzyBool)}
+
+\begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Berechnung der Aktivierung, label=lst:activation]]
+((x: Double) => new FuzzyBool(Math.min(minAcceptance,rule.outputs.func.apply(x).value)))
+\end{lstlisting}
+
+\paragraph{Aggregation}
+
+Der letzte Schritt ist die Aggregation. Da die Prämissenauswertung und die Aktivierung für jede Regel in der Regelbasis ausgeführt wird, haben wir nach der erfolgreichen Aktivierung $k$ verschiedene Fuzzy-Stellgrößen die nun durch die Aggregation zusammengeführt werden. Dafür wird die Maximumbildung verwendet.
+
+\begin{quote}
+Die Ausgabe aktivierten Fuzzy-Mengen $B_{1...k}$ werden mithilfe der Maximumbildung zusammengefügt. Diese eine Ausgangs Fuzzy-Menge $	output_{x_1,..., x_n}$ wird dann an das Defuzzifizierungs-Interface übergeben und mit der gewählten Defuzzifizierungs-Methoden (siehe Kapitel \ref{defuzzy}) in einen scharfen Wert umgewandelt.
+
+\begin{equation}
+output_{x_1,..., x_n}: y \mapsto \max_{r \in (1,...,k)}(output^{R_r}_{x_1...x_n})
+\end{equation}
+\end{quote}
+
+\begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Berechnung der Aggregation, label=lst:aggregation]]
+def combineOutputRules(outputFunctions: List[(Double) => FuzzyBool]): ((Double) => FuzzyBool) = {
+(x) => new FuzzyBool(outputFunctions.foldLeft(Double.MinValue)((a, b) => Math.max(a, b(x).value)))
+}
+\end{lstlisting}
+
+Wenn man die $k$ Regeln aus dem Schritt der Aktivierung nun zusammenfügt erhält man den Typ \code{List[(Double => FuzzyBool)]}. Daraus soll nun wieder eine Funktion des Typs \code{(Double => FuzzyBool)} gemacht werden. Die Kombination durch Maximumbildung wie in Listing \ref{lst:aggregation} zu sehen gibt uns das gewünschte Resultat. Dies Funktion muss nun an das Defuzzyfizierungs-Interface gegeben werden.
+
+\paragraph{Defuzzyfizierung}
+
 
 
 
