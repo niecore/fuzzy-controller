@@ -181,7 +181,9 @@
 \phantomsection
 \addcontentsline{toc}{section}{\texorpdfstring{II \hspace{0.35em}Inhaltsverzeichnis}{Inhaltsverzeichnis}}
 \addtocounter{section}{1}
+
 \tableofcontents
+
 \pagebreak
 \listoffigures
 \pagebreak
@@ -585,10 +587,47 @@ Wenn man die $k$ Regeln aus dem Schritt der Aktivierung nun zusammenfügt erhäl
 
 Die aus der Aggreagtion entstanden Funktion muss nun auf das Interval des \code{FuzzyValueConnectors} angewendet werden und danach mit einer Defuzzifizierungs-Methode in einen scharfen Wert umgewandelt werden.
 
-\begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Anwendung der Defuzzifizierungs-Methode, label=lst:defuzzy]]
+\begin{lstlisting}[firstnumber=1, style=myScalastyle, caption=Anwendung der Defuzzifizierungs-Methode, label=lst:defuzzy]
 	var setpoint = (connector.minVal to connector.maxVal)(logic.defuzzy.func.apply(output))
 \end{lstlisting}
 
+\subsection{Grafische Benutzeroberfläche}
+Zur Realisierung der grafischen Benutzeroberfläche wurde JavaFX eingesetzt. Bei JavaFX handelt es sich um die aktuellste Technologie um Benutzeroberflächen für Java zu entwickeln. Da Scala ebenfalls eine JVM Sprache ist wie Java, können diese beiden Sprachen gut kombiniert werden. Für die JVM geschriebenen Scala Programme sind Byte-Code kompatible zu Java. Durch diese Kompatibilität können unter anderem bestehende Java Bibliotheken auch aus Scala verwendet werden, so auch das JavaFX Framework.
+
+Ein Vorteil von JavaFX ist, das mithilfe eines Designer die Oberfläche erstellt werden kann. Der Designer erzeugt dabei keinen Quellcode, sondern eine HTML ähnliche Datei, eine FXML-Datei. Ein kleiner Ausschnitt ist in Listing~\ref{lst:fxml} zu sehen.
+
+\begin{lstlisting}[firstnumber=114, style=myScalastyle, caption={Kleiner Auszug aus einer FXML-Datei}, label=lst:fxml]
+<Label text="Geschweindigkeit" GridPane.rowIndex="2" />
+<Label text="Position" GridPane.rowIndex="3" />
+<TextField fx:id="tfNewton1" GridPane.columnIndex="1" />
+<TextField fx:id="tfAcc1" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+\end{lstlisting}
+
+Neben der Definition von GUI-Elementen und Layoutinformationen ist in der FXML-Datei auch eine Controller-Klasse angegeben. Zum erzeugen der GUI wird mithilfe des \lstinline|FXMLLoader| die FXML-Datei geladen. Der \lstinline|FXMLLoader| erstellt dann zur Laufzeit eine Instanz der Controller-Klasse. Über die \lstinline|fx:id| kann der FXMLLoader die Elemente der FXML-Datei den entsprechenden Klassenvariablen in der Controller-Klasse zuordnen und mithilfe von \textit{Dependency Injection} werden diese dann auch Objekten befüllt.
+
+\begin{lstlisting}[firstnumber=31, style=myScalastyle, caption=Annotierte Deklaration für den Slider und das Textfeld der Antriebskraft, label=lst:fxdeclaration]
+@FXML
+var sliderNewton: Slider = _
+@FXML
+var tfNewton1: TextField = _
+\end{lstlisting}
+
+Ein weiterer Vorteil von JavaFX ist die integrierte Binding-API. Mit Bindings können Variablen verknüpft, wenn sich dann der Wert der einen Variable ändert, aktualisiert sich automatisch der Wert der anderen Variable. Das Listing~ref{lst:fxbinding} zeigt wie der Wert des Textfeldes für die Antriebskraft mithilfe eines Konverters mit einer numerischen Variable \lstinline|newton1| verknüpft wird. Der Wert von \lstinline|newton1| wird dann zusätzlich noch mit dem Zahlenwert des Sliders verbunden. Der Inhalt des Textfeldes beinhaltet somit immer den aktuellen Wert des Sliders und das Fuzzy-Model könnte sich einfach auf eine Wertänderung der Variable \lstinline|newton1| registrieren.
+
+\begin{lstlisting}[firstnumber=114, style=myScalastyle, caption={Binding, der Wert des Sliders wird mit dem des Textfeldes verknüpft}, label=lst:fxbinding]
+Bindings.bindBidirectional(tfNewton1.textProperty(), newton1, new NumberStringConverter())
+newton1.bindBidirectional(sliderNewton.valueProperty())
+\end{lstlisting}
+
+Die Binding-API von JavaFX ermöglicht es also, Interaktive und Reaktive GUI-An"-wen"-dung"-en zu entwickeln, was für die Entwicklung eines Simulators für Fuzzy-Regelung essentiell wichtig ist, da Während der Simulation viele Daten des Fuzzy-Models in Echtzeit auf der GUI angezeigt werden.
+Abbildung~\ref{fig:screenshot} zeigt den finalen Stand der Anwendung. Im unteren Teil der Anwendung werden die aktuellen Werte der Autos numerisch dargestellt, wobei rechts das vorfahrende Auto, links das Fuzzy-gesteuerte Auto und in der Mitte der Abstand angezeigt wird. Darüber auf der linken Seite wird eins von vier Diagrammen angezeigt, welche die Änderung der Wert über die Zeit darstellen. Auf der rechten Seite wird der aktuelle Fuzzy-Ausgang visualisiert. Zum interagieren mit der Simulation dient der Slider unten rechts. Durch ein hochschieben wird das vorfahrende Auto beschleunigt und zum Abbremsen wird der Slider nach unten verschoben. Alle GUI-Elemente, welche Daten der Fuzzy-Regelung darstellen werden in Echtzeit aktualisiert damit das Verhalten der Fuzzy-Regelung optimal beobachtet werden kann.
+
+\begin{figure}
+	\centering
+	\includegraphics[width=1\textwidth]{img/practical/mainView}
+	\caption{Bildschirmfoto der Anwendung}
+	\label{fig:screenshot}
+\end{figure}
 
 \subsection{Konfiguration}
 
