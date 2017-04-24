@@ -26,7 +26,7 @@ class Car extends Drivable{
   // m^2
   val crossSectionalArea: Double = 1.86
   // N
-  val maxBrake: Double = 8000;
+  val maxBrake: Double = -8000;
   val maxAcc: Double = 3000;
 
   // m/s^2
